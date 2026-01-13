@@ -1,0 +1,61 @@
+# =========================
+# Android Studio / IntelliJ
+# =========================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# =========================
+# Gradle
+# =========================
+.gradle/
+build/
+**/build/
+
+# =========================
+# Local configuration
+# =========================
+local.properties
+
+# =========================
+# OS
+# =========================
+.DS_Store
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Kotlin / KMM
+# =========================
+.kotlin/
+**/.kotlin/
+
+# =========================
+# Compose / caches
+# =========================
+.compose/
+captures/
+
+# =========================
+# Native / KMM
+# =========================
+cinterop/
+*.klib
+
+# =========================
+# Fastlane
+# =========================
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# =========================
+# Keystores / secrets
+# =========================
+*.jks
+*.keystore
