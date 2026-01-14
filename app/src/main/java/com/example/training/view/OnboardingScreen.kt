@@ -2,10 +2,12 @@ package com.example.training.ui  // ← minuscule !
 
 import android.graphics.DashPathEffect
 import androidx.compose.foundation.Image
+import androidx.compose.material3.TextButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,17 +34,6 @@ fun OnboardingScreen(
     val pageData = viewModel.currentPageData
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Bouton SKIP
-        Text(
-            text = "SKIP",
-            color = Color.Gray,
-            fontSize = 16.sp,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(16.dp)
-                .clickable { viewModel.skipToEnd() }
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -53,7 +44,7 @@ fun OnboardingScreen(
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Contenu
+            // Contenu principal
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f),
@@ -62,58 +53,101 @@ fun OnboardingScreen(
                 Image(
                     painter = painterResource(pageData.imageRes),
                     contentDescription = pageData.title,
-                    modifier = Modifier.size(250.dp)
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .aspectRatio(1f)
                 )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
+                // Indicateurs de page
                 PageIndicators(
                     pageCount = viewModel.pageCount,
                     currentPage = viewModel.currentPage
                 )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(50.dp))
 
                 Text(
                     text = pageData.title,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(42.dp))
 
                 Text(
                     text = pageData.description,
                     fontSize = 16.sp,
-                    color = Color.White.copy(alpha = 0.7f),
+                    color = Color.White.copy(alpha = 0.87f),
                     textAlign = TextAlign.Center,
-                    lineHeight = 24.sp
+                    lineHeight = 24.sp,
+                    modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
 
-            // Bottom
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            // Bouton PREVIOUS
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-                Button(
-                    onClick = { viewModel.nextPage() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF8875FF)
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
+                Spacer(modifier = Modifier.height(50.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = if (viewModel.isLastPage) "GET STARTED" else "NEXT",
-                        fontSize = 16.sp
-                    )
-                }
+                    // Bouton BACK (visible sauf sur la première page)
+                    if (viewModel.currentPage > 0) {
+                        TextButton(
+                            onClick = { viewModel.previousPage() },
+                            modifier = Modifier.padding(start = 0.dp)
+                        ) {
+                            Text(
+                                text = "BACK",
+                                color = Color.White.copy(alpha = 0.44f),
+                                fontSize = 16.sp
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.width(1.dp))
+                    }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    // Bouton NEXT/GET STARTED
+                    Button(
+                        onClick = { viewModel.nextPage() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF8875FF)
+                        ),
+                        modifier = Modifier
+                            .width(if (viewModel.isLastPage) 155.dp else 100.dp)
+                            .height(48.dp),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            text = if (viewModel.isLastPage) "GET STARTED" else "NEXT",
+                            fontSize = 16.sp,
+                            color = Color.White
+                        )
+                    }
+                }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
+
+        // Bouton SKIP (placé après la Column pour être au-dessus)
+        Text(
+            text = "SKIP",
+            color = Color.White.copy(alpha = 0.44f),
+            fontSize = 16.sp,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(top = 14.dp, start = 24.dp)
+                .clickable { viewModel.skipToEnd() }
+        )
     }
 }
 
@@ -130,13 +164,11 @@ private fun PageIndicators(
         repeat(pageCount) { index ->
             Box(
                 modifier = Modifier
-                    .size(8.dp)
-                    .then(
-                        if (index == currentPage) {
-                            Modifier.background(Color.White, CircleShape)
-                        } else {
-                            Modifier.border(1.dp, Color.White.copy(alpha = 0.5f), CircleShape)
-                        }
+                    .width(26.dp)
+                    .height(4.dp)
+                    .background(
+                        if (index == currentPage) Color.White else Color.White.copy(alpha = 0.7f),
+                        androidx.compose.foundation.shape.RoundedCornerShape(56.dp)
                     )
             )
         }

@@ -26,6 +26,12 @@ class OnboardingViewModel : ViewModel() {
         )
     )
 
+    fun previousPage() {
+        if (currentPage > 0) {
+            currentPage--
+        }
+    }
+
     var currentPage by mutableStateOf(0)
         private set
 
