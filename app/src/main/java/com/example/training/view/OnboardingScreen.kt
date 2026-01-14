@@ -1,4 +1,4 @@
-package com.example.training.ui  // ← minuscule !
+package com.example.training.view
 
 import android.graphics.DashPathEffect
 import androidx.compose.foundation.Image
@@ -29,6 +29,7 @@ import com.example.training.viewmodel.OnboardingViewModel
 @Composable
 fun OnboardingScreen(
     viewModel: OnboardingViewModel = viewModel(),
+    onComplete: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val pageData = viewModel.currentPageData
@@ -117,7 +118,13 @@ fun OnboardingScreen(
 
                     // Bouton NEXT/GET STARTED
                     Button(
-                        onClick = { viewModel.nextPage() },
+                        onClick = {
+                            if (viewModel.isLastPage) {
+                                onComplete()
+                            } else {
+                                viewModel.nextPage()
+                            }
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF8875FF)
                         ),
@@ -146,7 +153,7 @@ fun OnboardingScreen(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(top = 14.dp, start = 24.dp)
-                .clickable { viewModel.skipToEnd() }
+                .clickable { onComplete() }
         )
     }
 }
