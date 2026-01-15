@@ -158,6 +158,7 @@ fun LoginScreen(
 fun LoginScreenPreview() {
     TrainingTheme {
         LoginScreen(
+            viewModel = AuthViewModel(),
             onNavigateToRegister = {},
             onNavigateBack = {},
             onLoginSuccess = {}
