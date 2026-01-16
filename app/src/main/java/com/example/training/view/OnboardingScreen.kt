@@ -45,7 +45,6 @@ fun OnboardingScreen(
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Contenu principal
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f),
@@ -61,7 +60,6 @@ fun OnboardingScreen(
 
                 Spacer(modifier = Modifier.height(50.dp))
 
-                // Indicateurs de page
                 PageIndicators(
                     pageCount = viewModel.pageCount,
                     currentPage = viewModel.currentPage
@@ -89,7 +87,6 @@ fun OnboardingScreen(
                 )
             }
 
-            // Bouton PREVIOUS
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -100,7 +97,6 @@ fun OnboardingScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Bouton BACK (visible sauf sur la première page)
                     if (viewModel.currentPage > 0) {
                         TextButton(
                             onClick = { viewModel.previousPage() },
@@ -116,7 +112,6 @@ fun OnboardingScreen(
                         Spacer(modifier = Modifier.width(1.dp))
                     }
 
-                    // Bouton NEXT/GET STARTED
                     Button(
                         onClick = {
                             if (viewModel.isLastPage) {
@@ -145,7 +140,7 @@ fun OnboardingScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // Bouton SKIP (placé après la Column pour être au-dessus)
+        // Bouton skip
         Text(
             text = "SKIP",
             color = Color.White.copy(alpha = 0.44f),
