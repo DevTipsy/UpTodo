@@ -82,7 +82,7 @@ fun AddTaskScreen(
 
 @Preview
 @Composable
-fun AddTaskScreenPreview() {
+private fun AddTaskScreenPreview() {
     TrainingTheme {
         AddTaskScreen(
             onAddTask = {}

@@ -306,7 +306,7 @@ fun TaskDetailScreen(
 
 @Preview
 @Composable
-fun TaskDetailScreenPreview() {
+private fun TaskDetailScreenPreview() {
     TrainingTheme {
         TaskDetailScreen(
             viewModel = TaskViewModel(),

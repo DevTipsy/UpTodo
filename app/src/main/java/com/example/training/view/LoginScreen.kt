@@ -155,7 +155,7 @@ fun LoginScreen(
 
 @Preview
 @Composable
-fun LoginScreenPreview() {
+private fun LoginScreenPreview() {
     TrainingTheme {
         LoginScreen(
             viewModel = AuthViewModel(),

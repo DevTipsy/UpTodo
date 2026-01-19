@@ -198,7 +198,7 @@ fun RegisterScreen(
 
 @Preview
 @Composable
-fun RegisterScreenPreview() {
+private fun RegisterScreenPreview() {
     TrainingTheme {
         RegisterScreen(
             viewModel = AuthViewModel(),

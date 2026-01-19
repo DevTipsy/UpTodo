@@ -179,7 +179,7 @@ private fun PageIndicators(
 
 @Preview
 @Composable
-fun OnboardingScreenPreview() {
+private fun OnboardingScreenPreview() {
     TrainingTheme {
         OnboardingScreen()
     }
