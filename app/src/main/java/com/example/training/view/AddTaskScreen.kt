@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 
@@ -52,7 +53,7 @@ fun AddTaskScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "What do you want to do today?",
+                text = stringResource(R.string.what_do_today),
                 color = Color.White,
                 fontSize = 20.sp
             )
@@ -60,7 +61,7 @@ fun AddTaskScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Tap + to add your tasks",
+                text = stringResource(R.string.tap_add_task),
                 color = Color.White,
                 fontSize = 16.sp
             )

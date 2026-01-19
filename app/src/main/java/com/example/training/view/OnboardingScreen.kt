@@ -17,12 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 import com.example.training.viewmodel.OnboardingViewModel
 
@@ -103,7 +105,7 @@ fun OnboardingScreen(
                             modifier = Modifier.padding(start = 0.dp)
                         ) {
                             Text(
-                                text = "BACK",
+                                text = stringResource(R.string.back),
                                 color = Color.White.copy(alpha = 0.44f),
                                 fontSize = 16.sp
                             )
@@ -129,7 +131,7 @@ fun OnboardingScreen(
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
                     ) {
                         Text(
-                            text = if (viewModel.isLastPage) "GET STARTED" else "NEXT",
+                            text = stringResource(if (viewModel.isLastPage) R.string.get_started else R.string.next),
                             fontSize = 16.sp,
                             color = Color.White
                         )
@@ -142,7 +144,7 @@ fun OnboardingScreen(
 
         // Bouton skip
         Text(
-            text = "SKIP",
+            text = stringResource(R.string.skip),
             color = Color.White.copy(alpha = 0.44f),
             fontSize = 16.sp,
             modifier = Modifier

@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.res.stringResource
+import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 import com.example.training.viewmodel.TaskViewModel
 import java.text.SimpleDateFormat
@@ -54,7 +56,7 @@ fun TaskDetailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Add Task",
+                    text = stringResource(R.string.add_task),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -73,7 +75,7 @@ fun TaskDetailScreen(
 
             // Nom de la tâche
             Text(
-                text = "Task name",
+                text = stringResource(R.string.task_name),
                 fontSize = 16.sp,
                 color = Color.White.copy(alpha = 0.87f)
             )
@@ -83,7 +85,7 @@ fun TaskDetailScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                placeholder = { Text("Do math homework", color = Color.White.copy(alpha = 0.5f)) },
+                placeholder = { Text(stringResource(R.string.task_name_placeholder), color = Color.White.copy(alpha = 0.5f)) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF8687E7),
@@ -98,7 +100,7 @@ fun TaskDetailScreen(
 
             // Sélection de catégorie
             Text(
-                text = "Category",
+                text = stringResource(R.string.category),
                 fontSize = 16.sp,
                 color = Color.White.copy(alpha = 0.87f)
             )
@@ -242,7 +244,7 @@ fun TaskDetailScreen(
                     shape = RoundedCornerShape(4.dp),
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -271,7 +273,7 @@ fun TaskDetailScreen(
                             modifier = Modifier.size(20.dp)
                         )
                     } else {
-                        Text("Create")
+                        Text(stringResource(R.string.create))
                     }
                 }
             }
@@ -290,12 +292,12 @@ fun TaskDetailScreen(
                     datePickerState.selectedDateMillis?.let { selectedDate = it }
                     showDatePicker = false
                 }) {
-                    Text("OK")
+                    Text(stringResource(R.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         ) {

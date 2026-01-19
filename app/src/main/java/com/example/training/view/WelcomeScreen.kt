@@ -21,10 +21,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 
 @Composable
@@ -46,7 +48,7 @@ fun WelcomeScreen(
             Spacer(modifier = Modifier.height(100.dp) )
 
             Text(
-                text = "Welcome to UpTodo",
+                text = stringResource(R.string.welcome_title),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
@@ -55,7 +57,7 @@ fun WelcomeScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Please login to your account or create\nnew account to continue",
+            text = stringResource(R.string.welcome_subtitle),
             fontSize = 16.sp,
             color = Color.White.copy(alpha = 0.67f)
         )
@@ -72,7 +74,7 @@ fun WelcomeScreen(
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
-            Text("LOGIN", fontSize = 16.sp)
+            Text(stringResource(R.string.login), fontSize = 16.sp)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -88,7 +90,7 @@ fun WelcomeScreen(
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
-            Text("CREATE ACCOUNT", fontSize = 16.sp)
+            Text(stringResource(R.string.create_account), fontSize = 16.sp)
         }
 
         Spacer(modifier = Modifier.height(32.dp))
