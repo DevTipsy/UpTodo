@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.res.stringResource
 import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
+import com.example.training.viewmodel.CategoryViewModel
 import com.example.training.viewmodel.TaskViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,6 +31,7 @@ import java.util.*
 @Composable
 fun TaskDetailScreen(
     viewModel: TaskViewModel = viewModel(),
+    categoryViewModel: CategoryViewModel = viewModel(),
     onDismiss: () -> Unit,
     onTaskAdded: () -> Unit
 ) {
@@ -115,7 +117,7 @@ fun TaskDetailScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    viewModel.categories.take(5).forEachIndexed { index, category ->
+                    categoryViewModel.categories.take(5).forEachIndexed { index: Int, category: com.example.training.model.Category ->
                         val isSelected = selectedCategoryIndex == index
 
                         Column(
@@ -133,7 +135,7 @@ fun TaskDetailScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Image(
-                                painter = painterResource(category.icon),
+                                painter = painterResource(category.getIconDrawable()),
                                 contentDescription = category.name,
                                 modifier = Modifier.size(48.dp)
                             )
@@ -154,7 +156,7 @@ fun TaskDetailScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    viewModel.categories.drop(5).take(5).forEachIndexed { rowIndex, category ->
+                    categoryViewModel.categories.drop(5).take(5).forEachIndexed { rowIndex: Int, category: com.example.training.model.Category ->
                         val index = rowIndex + 5
                         val isSelected = selectedCategoryIndex == index
 
@@ -173,7 +175,7 @@ fun TaskDetailScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Image(
-                                painter = painterResource(category.icon),
+                                painter = painterResource(category.getIconDrawable()),
                                 contentDescription = category.name,
                                 modifier = Modifier.size(48.dp)
                             )
@@ -252,10 +254,11 @@ fun TaskDetailScreen(
                 Button(
                     onClick = {
                         if (title.isNotBlank()) {
+                            val selectedCategory: com.example.training.model.Category = categoryViewModel.categories[selectedCategoryIndex]
                             viewModel.addTask(
                                 title = title,
                                 date = selectedDate,
-                                category = viewModel.categories[selectedCategoryIndex].name,
+                                category = selectedCategory.name,
                                 onSuccess = onTaskAdded
                             )
                         }

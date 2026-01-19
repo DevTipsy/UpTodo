@@ -22,8 +22,6 @@ class TaskViewModel : ViewModel() {
     var tasks by mutableStateOf<List<Task>>(emptyList())
         private set
 
-    val categories = Categories.all
-
     fun addTask(title: String, date: Long, category: String, onSuccess: () -> Unit) {
         val userId = auth.currentUser?.uid ?: return
 

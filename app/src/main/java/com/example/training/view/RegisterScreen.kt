@@ -30,6 +30,8 @@ fun RegisterScreen(
     onNavigateBack: (() -> Unit)? = null,
     onRegisterSuccess: () -> Unit
 ) {
+    var prenom by remember { mutableStateOf("") }
+    var nom by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -55,6 +57,42 @@ fun RegisterScreen(
             )
 
         Spacer(modifier = Modifier.height(40.dp))
+
+        OutlinedTextField(
+            value = prenom,
+            onValueChange = { prenom = it },
+            label = { Text("Prénom") },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF8875FF),
+                unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedLabelColor = Color.White.copy(alpha = 0.6f),
+                unfocusedLabelColor = Color.White.copy(alpha = 0.6f)
+            ),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = nom,
+            onValueChange = { nom = it },
+            label = { Text("Nom") },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF8875FF),
+                unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedLabelColor = Color.White.copy(alpha = 0.6f),
+                unfocusedLabelColor = Color.White.copy(alpha = 0.6f)
+            ),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = email,
@@ -144,7 +182,7 @@ fun RegisterScreen(
                 when {
                     password != confirmPassword -> passwordError = passwordMismatchMessage
                     password.length < 6 -> passwordError = passwordMinLengthMessage
-                    else -> viewModel.signUp(email, password, onRegisterSuccess)
+                    else -> viewModel.signUp(email, password, prenom, nom, onRegisterSuccess)
                 }
             },
             enabled = !viewModel.isLoading,
