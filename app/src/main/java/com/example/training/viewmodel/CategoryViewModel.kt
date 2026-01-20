@@ -30,36 +30,12 @@ class CategoryViewModel : ViewModel() {
                     doc.toObject(Category::class.java)?.copy(id = doc.id)
                 }
                 isLoading = false
-
-                // Si aucune catégorie n'existe, initialiser avec les catégories par défaut
-                if (categories.isEmpty()) {
-                    initializeDefaultCategories()
-                }
             }
             .addOnFailureListener {
                 isLoading = false
-                // En cas d'erreur, utiliser les catégories par défaut localement
-                categories = Categories.default
+                // En cas d'erreur, liste vide
+                categories = emptyList()
             }
     }
 
-    private fun initializeDefaultCategories() {
-        isLoading = true
-        val batch = firestore.batch()
-
-        Categories.default.forEach { category ->
-            val docRef = firestore.collection("categories").document()
-            batch.set(docRef, category.copy(id = docRef.id))
-        }
-
-        batch.commit()
-            .addOnSuccessListener {
-                loadCategories() // Recharger après initialisation
-            }
-            .addOnFailureListener {
-                isLoading = false
-                // En cas d'erreur, utiliser les catégories par défaut localement
-                categories = Categories.default
-            }
-    }
 }

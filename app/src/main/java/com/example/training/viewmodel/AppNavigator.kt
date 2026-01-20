@@ -1,12 +1,16 @@
 package com.example.training.viewmodel
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,6 +24,7 @@ import com.example.training.view.RegisterScreen
 import com.example.training.view.TaskDetailScreen
 import com.example.training.view.WelcomeScreen
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigator(
@@ -30,6 +35,8 @@ fun AppNavigator(
 ) {
     val navController = rememberNavController()
     var showTaskDetail by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     // Navigation de intro vers onboarding après 2s
     LaunchedEffect(Unit) {
@@ -132,6 +139,8 @@ fun AppNavigator(
 
             composable(Routes.HOME) {
                 AddTaskScreen(
+                    viewModel = taskViewModel,
+                    categoryViewModel = categoryViewModel,
                     onAddTask = { showTaskDetail = true }
                 )
             }
@@ -146,8 +155,23 @@ fun AppNavigator(
                 onTaskAdded = {
                     showTaskDetail = false
                     taskViewModel.loadTasks()
+                    // Afficher le message de succès
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Tâche ajoutée avec succès !",
+                            duration = androidx.compose.material3.SnackbarDuration.Short
+                        )
+                    }
                 }
             )
         }
+
+        // Snackbar pour les messages
+        androidx.compose.material3.SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = androidx.compose.ui.Modifier
+                .align(androidx.compose.ui.Alignment.BottomCenter)
+                .padding(16.dp)
+        )
     }
 }
