@@ -1,3 +1,49 @@
 <resources>
-    <string name="app_name">Training</string>
+    <string name="app_name">UpTodo</string>
+
+    <!-- Onboarding -->
+    <string name="skip">SKIP</string>
+    <string name="back">BACK</string>
+    <string name="next">NEXT</string>
+    <string name="get_started">GET STARTED</string>
+
+    <!-- Welcome -->
+    <string name="welcome_title">Welcome to UpTodo</string>
+    <string name="welcome_subtitle">Please login to your account or create\nnew account to continue</string>
+    <string name="login">LOGIN</string>
+    <string name="create_account">CREATE ACCOUNT</string>
+
+    <!-- Login -->
+    <string name="connexion">Connexion</string>
+    <string name="email">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="login_button">Se connecter</string>
+    <string name="no_account">Pas encore de compte ?</string>
+    <string name="signup">S\'inscrire</string>
+
+    <!-- Register -->
+    <string name="inscription">Inscription</string>
+    <string name="confirm_password">Confirmer mot de passe</string>
+    <string name="register_button">S\'inscrire</string>
+    <string name="already_account">Déjà un compte ?</string>
+    <string name="signin">Se connecter</string>
+    <string name="password_mismatch">Les mots de passe ne correspondent pas</string>
+    <string name="password_min_length">Minimum 6 caractères</string>
+
+    <!-- Add Task -->
+    <string name="what_do_today">What do you want to do today?</string>
+    <string name="tap_add_task">Tap + to add your tasks</string>
+
+    <!-- Task Detail -->
+    <string name="add_task">Add Task</string>
+    <string name="task_name">Task name</string>
+    <string name="task_name_placeholder">Do math homework</string>
+    <string name="category">Category</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="ok">OK</string>
+
+    <!-- Home -->
+    <string name="bienvenue">Bienvenue !</string>
+    <string name="logout">Se déconnecter</string>
 </resources>

@@ -17,12 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 import com.example.training.viewmodel.OnboardingViewModel
 
@@ -45,7 +47,6 @@ fun OnboardingScreen(
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Contenu principal
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f),
@@ -61,7 +62,6 @@ fun OnboardingScreen(
 
                 Spacer(modifier = Modifier.height(50.dp))
 
-                // Indicateurs de page
                 PageIndicators(
                     pageCount = viewModel.pageCount,
                     currentPage = viewModel.currentPage
@@ -89,7 +89,6 @@ fun OnboardingScreen(
                 )
             }
 
-            // Bouton PREVIOUS
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -100,14 +99,13 @@ fun OnboardingScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Bouton BACK (visible sauf sur la première page)
                     if (viewModel.currentPage > 0) {
                         TextButton(
                             onClick = { viewModel.previousPage() },
                             modifier = Modifier.padding(start = 0.dp)
                         ) {
                             Text(
-                                text = "BACK",
+                                text = stringResource(R.string.back),
                                 color = Color.White.copy(alpha = 0.44f),
                                 fontSize = 16.sp
                             )
@@ -116,7 +114,6 @@ fun OnboardingScreen(
                         Spacer(modifier = Modifier.width(1.dp))
                     }
 
-                    // Bouton NEXT/GET STARTED
                     Button(
                         onClick = {
                             if (viewModel.isLastPage) {
@@ -134,7 +131,7 @@ fun OnboardingScreen(
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
                     ) {
                         Text(
-                            text = if (viewModel.isLastPage) "GET STARTED" else "NEXT",
+                            text = stringResource(if (viewModel.isLastPage) R.string.get_started else R.string.next),
                             fontSize = 16.sp,
                             color = Color.White
                         )
@@ -145,9 +142,9 @@ fun OnboardingScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // Bouton SKIP (placé après la Column pour être au-dessus)
+        // Bouton skip
         Text(
-            text = "SKIP",
+            text = stringResource(R.string.skip),
             color = Color.White.copy(alpha = 0.44f),
             fontSize = 16.sp,
             modifier = Modifier
@@ -184,7 +181,7 @@ private fun PageIndicators(
 
 @Preview
 @Composable
-fun OnboardingScreenPreview() {
+private fun OnboardingScreenPreview() {
     TrainingTheme {
         OnboardingScreen()
     }

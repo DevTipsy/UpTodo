@@ -18,6 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.res.stringResource
+import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 import com.example.training.viewmodel.AuthViewModel
 
@@ -33,6 +35,9 @@ fun RegisterScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
+    val passwordMismatchMessage = stringResource(R.string.password_mismatch)
+    val passwordMinLengthMessage = stringResource(R.string.password_min_length)
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -43,7 +48,7 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Inscription",
+                text = stringResource(R.string.inscription),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
@@ -54,7 +59,7 @@ fun RegisterScreen(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text(stringResource(R.string.email)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -76,7 +81,7 @@ fun RegisterScreen(
                 password = it
                 passwordError = null
             },
-            label = { Text("Mot de passe") },
+            label = { Text(stringResource(R.string.password)) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(),
@@ -99,7 +104,7 @@ fun RegisterScreen(
                 confirmPassword = it
                 passwordError = null
             },
-            label = { Text("Confirmer mot de passe") },
+            label = { Text(stringResource(R.string.confirm_password)) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(),
@@ -137,8 +142,8 @@ fun RegisterScreen(
         Button(
             onClick = {
                 when {
-                    password != confirmPassword -> passwordError = "Les mots de passe ne correspondent pas"
-                    password.length < 6 -> passwordError = "Minimum 6 caractères"
+                    password != confirmPassword -> passwordError = passwordMismatchMessage
+                    password.length < 6 -> passwordError = passwordMinLengthMessage
                     else -> viewModel.signUp(email, password, onRegisterSuccess)
                 }
             },
@@ -157,7 +162,7 @@ fun RegisterScreen(
                     modifier = Modifier.size(24.dp)
                 )
             } else {
-                Text("S'inscrire", fontSize = 16.sp)
+                Text(stringResource(R.string.register_button), fontSize = 16.sp)
             }
         }
 
@@ -165,12 +170,12 @@ fun RegisterScreen(
 
         Row {
             Text(
-                text = "Déjà un compte ? ",
+                text = stringResource(R.string.already_account) + " ",
                 color = Color.White.copy(alpha = 0.6f),
                 fontSize = 14.sp
             )
             Text(
-                text = "Se connecter",
+                text = stringResource(R.string.signin),
                 color = Color(0xFF8875FF),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
@@ -198,9 +203,10 @@ fun RegisterScreen(
 
 @Preview
 @Composable
-fun RegisterScreenPreview() {
+private fun RegisterScreenPreview() {
     TrainingTheme {
         RegisterScreen(
+            viewModel = AuthViewModel(),
             onNavigateToLogin = {},
             onNavigateBack = {},
             onRegisterSuccess = {}
