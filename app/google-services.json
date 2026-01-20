@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "415819245343",
+    "project_id": "uptodo-69b35",
+    "storage_bucket": "uptodo-69b35.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:415819245343:android:9d29ad48a29ff00f46b22a",
+        "android_client_info": {
+          "package_name": "com.example.training"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMiXUrLdfbbRUcP_c7EVwye34wWA6UTO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
