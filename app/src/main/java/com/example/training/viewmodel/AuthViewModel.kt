@@ -12,7 +12,8 @@ class AuthViewModel : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    var currentUser by mutableStateOf<User?>(null)
+    // On lit directement auth.currentUser
+    var userProfile by mutableStateOf<User?>(null)
         private set
 
     var isLoading by mutableStateOf(false)
@@ -22,11 +23,18 @@ class AuthViewModel : ViewModel() {
         private set
 
     init {
-        // Charger l'utilisateur au démarrage si connecté
+        // Charger le profil utilisateur au démarrage si connecté
         auth.currentUser?.let { firebaseUser ->
-            loadUserFromFirestore(firebaseUser.uid)
+            loadUserProfile(firebaseUser.uid)
         }
     }
+
+    // Helper pour vérifier si l'utilisateur est connecté
+    val isUserLoggedIn: Boolean
+        get() = auth.currentUser != null
+
+    // Helper pour récupérer l'ID de l'utilisateur connecté
+    fun getCurrentUserId(): String? = auth.currentUser?.uid
 
     fun signUp(email: String, password: String, prenom: String, nom: String, onSuccess: () -> Unit) {
         if (email.isBlank() || password.isBlank() || prenom.isBlank() || nom.isBlank()) {
@@ -40,6 +48,7 @@ class AuthViewModel : ViewModel() {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    // On utilise directement auth.currentUser (source de vérité)
                     val firebaseUser = auth.currentUser
                     if (firebaseUser != null) {
                         // Créer le document User dans Firestore
@@ -55,7 +64,7 @@ class AuthViewModel : ViewModel() {
                             .document(firebaseUser.uid)
                             .set(user)
                             .addOnSuccessListener {
-                                currentUser = user
+                                userProfile = user
                                 isLoading = false
                                 onSuccess()
                             }
@@ -83,10 +92,11 @@ class AuthViewModel : ViewModel() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    // On utilise directement auth.currentUser (source de vérité)
                     val firebaseUser = auth.currentUser
                     if (firebaseUser != null) {
-                        // Charger le User depuis Firestore
-                        loadUserFromFirestore(firebaseUser.uid) { success ->
+                        // Charger le profil utilisateur depuis Firestore
+                        loadUserProfile(firebaseUser.uid) { success ->
                             isLoading = false
                             if (success) {
                                 onSuccess()
@@ -102,13 +112,13 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-    private fun loadUserFromFirestore(userId: String, onComplete: ((Boolean) -> Unit)? = null) {
+    private fun loadUserProfile(userId: String, onComplete: ((Boolean) -> Unit)? = null) {
         firestore.collection("users")
             .document(userId)
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    currentUser = document.toObject(User::class.java)
+                    userProfile = document.toObject(User::class.java)
                     onComplete?.invoke(true)
                 } else {
                     onComplete?.invoke(false)
@@ -121,7 +131,7 @@ class AuthViewModel : ViewModel() {
 
     fun signOut() {
         auth.signOut()
-        currentUser = null
+        userProfile = null
     }
 
     fun clearError() {

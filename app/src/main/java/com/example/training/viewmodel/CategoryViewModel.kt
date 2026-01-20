@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.training.model.Categories
 import com.example.training.model.Category
 import com.google.firebase.firestore.FirebaseFirestore
 
