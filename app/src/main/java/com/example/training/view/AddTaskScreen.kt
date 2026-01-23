@@ -24,6 +24,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.training.R
 import com.example.training.model.Category
 import com.example.training.ui.theme.TrainingTheme
+import com.example.training.util.DateUtils
+import com.example.training.viewmodel.AuthViewModel
 import com.example.training.viewmodel.CalendarViewModel
 import com.example.training.viewmodel.CategoryViewModel
 import com.example.training.viewmodel.TaskViewModel
@@ -32,20 +34,43 @@ import java.util.*
 
 @Composable
 fun AddTaskScreen(
+    authViewModel: AuthViewModel,
     viewModel: TaskViewModel = viewModel(),
     categoryViewModel: CategoryViewModel = viewModel(),
     calendarViewModel: CalendarViewModel = viewModel(),
     onAddTask: () -> Unit
 ) {
-    // Charger les tâches au démarrage
-    LaunchedEffect(Unit) {
-        viewModel.loadTasks()
+    // Collecter les StateFlows
+    val currentUser by authViewModel.currentUser.collectAsState()
+    val tasks by viewModel.tasks.collectAsState()
+    val categories by categoryViewModel.categories.collectAsState()
+
+    // selectedDate est un MutableState, pas un StateFlow
+    val selectedDate = calendarViewModel.selectedDate
+
+    // Charger les tâches au démarrage selon l'utilisateur connecté
+    LaunchedEffect(currentUser) {
+        currentUser?.let { user ->
+            viewModel.startObservingTasks(user.id)
+        }
     }
 
-    // Filtrer les tâches selon la date sélectionnée
-    val filteredTasks = viewModel.tasks.filter { task ->
-        isSameDay(task.date, calendarViewModel.selectedDate.timeInMillis)
+    // Cleanup quand on quitte l'écran
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.stopObservingTasks()
+        }
     }
+
+    // Filtrer les tâches avec derivedStateOf pour optimiser les recompositions
+    // Le filtrage ne se refait que si tasks ou selectedDate changent
+    val filteredTasks = remember(tasks, selectedDate) {
+        derivedStateOf {
+            tasks.filter { task ->
+                DateUtils.isSameDay(task.date, selectedDate.timeInMillis)
+            }
+        }
+    }.value
 
     Box(
         modifier = Modifier
@@ -102,7 +127,7 @@ fun AddTaskScreen(
                     items(filteredTasks) { task ->
                         TaskItem(
                             task = task,
-                            category = categoryViewModel.categories.find { it.name == task.category }
+                            category = categories.find { it.name == task.category }
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                     }
@@ -193,19 +218,12 @@ private fun TaskItem(
     }
 }
 
-// Fonction utilitaire pour comparer deux dates (ignore l'heure)
-private fun isSameDay(timestamp1: Long, timestamp2: Long): Boolean {
-    val cal1 = Calendar.getInstance().apply { timeInMillis = timestamp1 }
-    val cal2 = Calendar.getInstance().apply { timeInMillis = timestamp2 }
-    return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-            cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
-}
-
 @Preview
 @Composable
 private fun AddTaskScreenPreview() {
     TrainingTheme {
         AddTaskScreen(
+            authViewModel = AuthViewModel(),
             viewModel = TaskViewModel(),
             categoryViewModel = CategoryViewModel(),
             onAddTask = {}

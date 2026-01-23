@@ -93,22 +93,12 @@ fun AppNavigator(
 
             composable(Routes.LOGIN) {
                 LoginScreen(
+                    navController = navController,
                     viewModel = authViewModel,
-                    onNavigateToRegister = {
-                        navController.navigate(Routes.REGISTER) {
-                            popUpTo(Routes.WELCOME)
-                            launchSingleTop = true
-                        }
-                    },
                     onNavigateBack = {
                         onboardingViewModel.skipToEnd()
                         navController.navigate(Routes.ONBOARDING) {
                             popUpTo(Routes.LOGIN) { inclusive = true }
-                        }
-                    },
-                    onLoginSuccess = {
-                        navController.navigate(Routes.HOME) {
-                            popUpTo(0) { inclusive = true }
                         }
                     }
                 )
@@ -116,22 +106,12 @@ fun AppNavigator(
 
             composable(Routes.REGISTER) {
                 RegisterScreen(
+                    navController = navController,
                     viewModel = authViewModel,
-                    onNavigateToLogin = {
-                        navController.navigate(Routes.LOGIN) {
-                            popUpTo(Routes.WELCOME)
-                            launchSingleTop = true
-                        }
-                    },
                     onNavigateBack = {
                         onboardingViewModel.skipToEnd()
                         navController.navigate(Routes.ONBOARDING) {
                             popUpTo(Routes.REGISTER) { inclusive = true }
-                        }
-                    },
-                    onRegisterSuccess = {
-                        navController.navigate(Routes.HOME) {
-                            popUpTo(0) { inclusive = true }
                         }
                     }
                 )
@@ -139,6 +119,7 @@ fun AppNavigator(
 
             composable(Routes.HOME) {
                 AddTaskScreen(
+                    authViewModel = authViewModel,
                     viewModel = taskViewModel,
                     categoryViewModel = categoryViewModel,
                     onAddTask = { showTaskDetail = true }
@@ -149,19 +130,12 @@ fun AppNavigator(
         // Modal d'ajout de tâche
         if (showTaskDetail) {
             TaskDetailScreen(
+                authViewModel = authViewModel,
                 viewModel = taskViewModel,
                 categoryViewModel = categoryViewModel,
                 onDismiss = { showTaskDetail = false },
                 onTaskAdded = {
                     showTaskDetail = false
-                    taskViewModel.loadTasks()
-                    // Afficher le message de succès
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = "Tâche ajoutée avec succès !",
-                            duration = androidx.compose.material3.SnackbarDuration.Short
-                        )
-                    }
                 }
             )
         }

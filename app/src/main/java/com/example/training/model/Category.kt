@@ -4,10 +4,10 @@ import androidx.annotation.DrawableRes
 import com.example.training.R
 
 data class Category(
-    val id: String = "",
-    val name: String = "",
-    val iconName: String = "", // Nom de l'icône pour Firestore (ex: "grocery", "work")
-    val color: Long = 0xFF8687E7
+    val id: String,
+    val name: String,
+    val iconName: String, // Nom de l'icône pour Firestore (ex: "grocery", "work")
+    val color: Long
 ) {
     // Mapping du nom d'icône vers le drawable
     @DrawableRes

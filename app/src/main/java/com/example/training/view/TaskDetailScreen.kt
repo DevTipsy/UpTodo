@@ -21,7 +21,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.res.stringResource
 import com.example.training.R
+import com.example.training.model.Category
 import com.example.training.ui.theme.TrainingTheme
+import com.example.training.viewmodel.AuthViewModel
 import com.example.training.viewmodel.CategoryViewModel
 import com.example.training.viewmodel.TaskViewModel
 import java.text.SimpleDateFormat
@@ -30,6 +32,7 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailScreen(
+    authViewModel: AuthViewModel,
     viewModel: TaskViewModel = viewModel(),
     categoryViewModel: CategoryViewModel = viewModel(),
     onDismiss: () -> Unit,
@@ -39,6 +42,16 @@ fun TaskDetailScreen(
     var selectedDate by remember { mutableStateOf(System.currentTimeMillis()) }
     var selectedCategoryIndex by remember { mutableStateOf(0) }
     var showDatePicker by remember { mutableStateOf(false) }
+
+    // Collecter les StateFlows
+    val currentUser by authViewModel.currentUser.collectAsState()
+    val categories by categoryViewModel.categories.collectAsState()
+    val isAddingTask by viewModel.isAddingTask.collectAsState()
+
+    // Réinitialiser l'état quand on ouvre la modale
+    LaunchedEffect(Unit) {
+        viewModel.resetAddTaskState()
+    }
 
     val dateFormatter = remember { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) }
 
@@ -109,89 +122,12 @@ fun TaskDetailScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Grille des catégories
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    categoryViewModel.categories.take(5).forEachIndexed { index: Int, category: com.example.training.model.Category ->
-                        val isSelected = selectedCategoryIndex == index
-
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .border(
-                                    width = if (isSelected) 2.dp else 1.dp,
-                                    color = if (isSelected) Color(0xFF8687E7) else Color(0xFF979797),
-                                    shape = RoundedCornerShape(4.dp)
-                                )
-                                .clickable { selectedCategoryIndex = index }
-                                .padding(8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Image(
-                                painter = painterResource(category.getIconDrawable()),
-                                contentDescription = category.name,
-                                modifier = Modifier.size(48.dp)
-                            )
-
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            Text(
-                                text = category.name,
-                                fontSize = 10.sp,
-                                color = Color.White,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    categoryViewModel.categories.drop(5).take(5).forEachIndexed { rowIndex: Int, category: com.example.training.model.Category ->
-                        val index = rowIndex + 5
-                        val isSelected = selectedCategoryIndex == index
-
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .border(
-                                    width = if (isSelected) 2.dp else 1.dp,
-                                    color = if (isSelected) Color(0xFF8687E7) else Color(0xFF979797),
-                                    shape = RoundedCornerShape(4.dp)
-                                )
-                                .clickable { selectedCategoryIndex = index }
-                                .padding(8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Image(
-                                painter = painterResource(category.getIconDrawable()),
-                                contentDescription = category.name,
-                                modifier = Modifier.size(48.dp)
-                            )
-
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            Text(
-                                text = category.name,
-                                fontSize = 10.sp,
-                                color = Color.White,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-                }
-            }
+            // Grille des catégories (composable séparé pour améliorer les performances)
+            CategoryGrid(
+                categories = categories,
+                selectedCategoryIndex = selectedCategoryIndex,
+                onCategorySelected = { selectedCategoryIndex = it }
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -223,16 +159,6 @@ fun TaskDetailScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Message d'erreur
-            if (viewModel.errorMessage != null) {
-                Text(
-                    text = viewModel.errorMessage ?: "",
-                    color = Color.Red,
-                    fontSize = 14.sp
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
             // Boutons d'action
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -253,27 +179,35 @@ fun TaskDetailScreen(
 
                 Button(
                     onClick = {
-                        if (title.isNotBlank()) {
-                            val selectedCategory: com.example.training.model.Category = categoryViewModel.categories[selectedCategoryIndex]
-                            viewModel.addTask(
-                                title = title,
-                                date = selectedDate,
-                                category = selectedCategory.name,
-                                onSuccess = onTaskAdded
-                            )
+                        if (title.isNotBlank() && categories.isNotEmpty()) {
+                            val selectedCategory = categories[selectedCategoryIndex]
+                            currentUser?.let { user ->
+                                viewModel.addTask(
+                                    title = title,
+                                    date = selectedDate,
+                                    category = selectedCategory.name,
+                                    userId = user.id,
+                                    onSuccess = {
+                                        onDismiss()
+                                        onTaskAdded()
+                                    }
+                                )
+                            }
                         }
                     },
-                    enabled = title.isNotBlank() && !viewModel.isLoading,
+                    enabled = title.isNotBlank() && !isAddingTask && currentUser != null,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF8687E7)
+                        containerColor = Color(0xFF8687E7),
+                        disabledContainerColor = Color(0xFF8687E7).copy(alpha = 0.5f)
                     ),
                     shape = RoundedCornerShape(4.dp),
                     modifier = Modifier.weight(1f)
                 ) {
-                    if (viewModel.isLoading) {
+                    if (isAddingTask) {
                         CircularProgressIndicator(
                             color = Color.White,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp
                         )
                     } else {
                         Text(stringResource(R.string.create))
@@ -309,11 +243,103 @@ fun TaskDetailScreen(
     }
 }
 
+// SOLUTION 3: Diviser les composables longs pour améliorer les performances de compilation
+
+@Composable
+private fun CategoryGrid(
+    categories: List<Category>,
+    selectedCategoryIndex: Int,
+    onCategorySelected: (Int) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // Première rangée (5 catégories)
+        CategoryRow(
+            categories = categories.take(5),
+            startIndex = 0,
+            selectedCategoryIndex = selectedCategoryIndex,
+            onCategorySelected = onCategorySelected
+        )
+
+        // Deuxième rangée (5 catégories suivantes)
+        CategoryRow(
+            categories = categories.drop(5).take(5),
+            startIndex = 5,
+            selectedCategoryIndex = selectedCategoryIndex,
+            onCategorySelected = onCategorySelected
+        )
+    }
+}
+
+@Composable
+private fun CategoryRow(
+    categories: List<Category>,
+    startIndex: Int,
+    selectedCategoryIndex: Int,
+    onCategorySelected: (Int) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        categories.forEachIndexed { rowIndex, category ->
+            val index = rowIndex + startIndex
+            val isSelected = selectedCategoryIndex == index
+
+            CategoryItem(
+                category = category,
+                isSelected = isSelected,
+                onClick = { onCategorySelected(index) },
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoryItem(
+    category: Category,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .aspectRatio(1f)
+            .border(
+                width = if (isSelected) 2.dp else 1.dp,
+                color = if (isSelected) Color(0xFF8687E7) else Color(0xFF979797),
+                shape = RoundedCornerShape(4.dp)
+            )
+            .clickable(onClick = onClick)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(category.getIconDrawable()),
+            contentDescription = category.name,
+            modifier = Modifier.size(48.dp)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = category.name,
+            fontSize = 10.sp,
+            color = Color.White,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun TaskDetailScreenPreview() {
     TrainingTheme {
         TaskDetailScreen(
+            authViewModel = AuthViewModel(),
             viewModel = TaskViewModel(),
             onDismiss = {},
             onTaskAdded = {}
