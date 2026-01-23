@@ -19,29 +19,60 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
+import com.example.training.util.UiEvent
 import com.example.training.viewmodel.AuthViewModel
+import com.example.training.viewmodel.Routes
 
 @Composable
 fun LoginScreen(
+    navController: NavController,
     viewModel: AuthViewModel = viewModel(),
-    onNavigateToRegister: () -> Unit,
-    onNavigateBack: (() -> Unit)? = null,
-    onLoginSuccess: () -> Unit
+    onNavigateBack: (() -> Unit)? = null
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+    // Collecter les StateFlows
+    val isLoading by viewModel.isLoading.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Collecter les UiEvents pour navigation et snackbars
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message)
+                }
+                is UiEvent.Navigate -> {
+                    navController.navigate(event.route) {
+                        popUpTo(Routes.LOGIN) { inclusive = true }
+                    }
+                }
+                UiEvent.NavigateBack -> { /* Pas utilisé ici */ }
+            }
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(padding)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
             Text(
                 text = stringResource(R.string.connexion),
                 fontSize = 32.sp,
@@ -90,18 +121,9 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        if (viewModel.errorMessage != null) {
-            Text(
-                text = viewModel.errorMessage ?: "",
-                color = Color.Red,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
         Button(
-            onClick = { viewModel.signIn(email, password, onLoginSuccess) },
-            enabled = !viewModel.isLoading,
+            onClick = { viewModel.signIn(email, password) },
+            enabled = !isLoading,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF8875FF)
             ),
@@ -110,7 +132,7 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
-            if (viewModel.isLoading) {
+            if (isLoading) {
                 CircularProgressIndicator(
                     color = Color.White,
                     modifier = Modifier.size(24.dp)
@@ -133,23 +155,26 @@ fun LoginScreen(
                 color = Color(0xFF8875FF),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { onNavigateToRegister() }
+                modifier = Modifier.clickable {
+                    navController.navigate(Routes.REGISTER)
+                }
             )
         }
-    }
+            }
 
-        if (onNavigateBack != null) {
-            IconButton(
-                onClick = onNavigateBack,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(top = 8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
-                    tint = Color.White
-                )
+            if (onNavigateBack != null) {
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Retour",
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
@@ -160,10 +185,9 @@ fun LoginScreen(
 private fun LoginScreenPreview() {
     TrainingTheme {
         LoginScreen(
+            navController = rememberNavController(),
             viewModel = AuthViewModel(),
-            onNavigateToRegister = {},
-            onNavigateBack = {},
-            onLoginSuccess = {}
+            onNavigateBack = {}
         )
     }
 }

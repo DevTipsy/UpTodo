@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 
-annotation class IntroScreen
 @Composable
 fun IntroScreen(modifier: Modifier = Modifier) {
     Column(
