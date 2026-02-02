@@ -22,6 +22,7 @@ import com.example.training.view.LoginScreen
 import com.example.training.view.OnboardingScreen
 import com.example.training.view.RegisterScreen
 import com.example.training.view.TaskDetailScreen
+import com.example.training.view.UserProfileScreen
 import com.example.training.view.WelcomeScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -122,7 +123,18 @@ fun AppNavigator(
                     authViewModel = authViewModel,
                     viewModel = taskViewModel,
                     categoryViewModel = categoryViewModel,
-                    onAddTask = { showTaskDetail = true }
+                    onAddTask = { showTaskDetail = true },
+                    onNavigateToProfile = {
+                        navController.navigate(Routes.USER_PROFILE)
+                    }
+                )
+            }
+
+            composable(Routes.USER_PROFILE) {
+                UserProfileScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }

@@ -38,7 +38,8 @@ fun AddTaskScreen(
     viewModel: TaskViewModel = viewModel(),
     categoryViewModel: CategoryViewModel = viewModel(),
     calendarViewModel: CalendarViewModel = viewModel(),
-    onAddTask: () -> Unit
+    onAddTask: () -> Unit,
+    onNavigateToProfile: () -> Unit = {}
 ) {
     // Collecter les StateFlows
     val currentUser by authViewModel.currentUser.collectAsState()
@@ -81,7 +82,8 @@ fun AddTaskScreen(
             // Calendrier horizontal
             CalendarScreen(
                 calendarViewModel = calendarViewModel,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onAvatarClick = onNavigateToProfile
             )
 
             // Contenu selon les tâches filtrées

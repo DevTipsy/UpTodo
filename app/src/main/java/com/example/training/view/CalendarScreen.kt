@@ -28,14 +28,23 @@ import java.util.*
 @Composable
 fun CalendarScreen(
     calendarViewModel: CalendarViewModel = viewModel(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAvatarClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Black)
-            .padding(vertical = 16.dp)
+            .padding(top = 32.dp, bottom = 16.dp)
     ) {
+        // Avatar en haut
+        Avatar(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            onClick = onAvatarClick
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         // Header avec date et chevrons
         CalendarHeader(
             formattedDate = calendarViewModel.getFormattedHeaderDate(),
