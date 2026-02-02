@@ -132,6 +132,8 @@ fun AppNavigator(
 
             composable(Routes.USER_PROFILE) {
                 UserProfileScreen(
+                    navController = navController,
+                    authViewModel = authViewModel,
                     onNavigateBack = {
                         navController.popBackStack()
                     }

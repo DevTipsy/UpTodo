@@ -125,4 +125,97 @@ class AuthRepository {
     fun signOut() {
         auth.signOut()
     }
+
+    /**
+     * Mettre à jour le nom de l'utilisateur
+     */
+    suspend fun updateUserName(prenom: String, nom: String): Result<Unit> {
+        return try {
+            val firebaseUser = auth.currentUser
+                ?: return Result.Error(Exception("Utilisateur non connecté"))
+
+            firestore.collection("users")
+                .document(firebaseUser.uid)
+                .update(
+                    mapOf(
+                        "prenom" to prenom,
+                        "nom" to nom
+                    )
+                )
+                .await()
+
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e, "Erreur lors de la mise à jour du nom")
+        }
+    }
+
+    /**
+     * Mettre à jour l'email de l'utilisateur
+     * Met à jour l'email dans Firestore ET Firebase Auth
+     */
+    suspend fun updateUserEmail(newEmail: String): Result<Unit> {
+        return try {
+            val firebaseUser = auth.currentUser
+                ?: return Result.Error(Exception("Utilisateur non connecté"))
+
+            val oldEmail = firebaseUser.email
+
+            // 1. Mettre à jour l'email dans Firestore d'abord
+            firestore.collection("users")
+                .document(firebaseUser.uid)
+                .update("email", newEmail)
+                .await()
+
+            // 2. Mettre à jour l'email dans Firebase Auth
+            try {
+                firebaseUser.updateEmail(newEmail).await()
+            } catch (authError: Exception) {
+                // Si Firebase Auth échoue, rollback Firestore
+                if (oldEmail != null) {
+                    firestore.collection("users")
+                        .document(firebaseUser.uid)
+                        .update("email", oldEmail)
+                        .await()
+                }
+                throw authError
+            }
+
+            Result.Success(Unit)
+        } catch (e: FirebaseAuthException) {
+            val message = when (e.errorCode) {
+                "ERROR_EMAIL_ALREADY_IN_USE" -> "Cet email est déjà utilisé"
+                "ERROR_INVALID_EMAIL" -> "Email invalide"
+                "ERROR_REQUIRES_RECENT_LOGIN" -> "Session expirée. Veuillez vous reconnecter puis réessayer"
+                else -> "Erreur Firebase: ${e.message}"
+            }
+            Result.Error(e, message)
+        } catch (e: Exception) {
+            Result.Error(e, "Erreur: ${e.message}")
+        }
+    }
+
+    /**
+     * Mettre à jour le mot de passe de l'utilisateur
+     */
+    suspend fun updateUserPassword(newPassword: String): Result<Unit> {
+        return try {
+            val firebaseUser = auth.currentUser
+                ?: return Result.Error(Exception("Utilisateur non connecté"))
+
+            // Mettre à jour le mot de passe
+            firebaseUser.updatePassword(newPassword).await()
+
+            Result.Success(Unit)
+        } catch (e: FirebaseAuthException) {
+            val message = when (e.errorCode) {
+                "ERROR_WEAK_PASSWORD" -> "Le nouveau mot de passe est trop faible (min 6 caractères)"
+                "ERROR_REQUIRES_RECENT_LOGIN" -> "Pour des raisons de sécurité, veuillez vous reconnecter avant de modifier le mot de passe"
+                else -> "Erreur lors de la mise à jour du mot de passe"
+            }
+            Result.Error(e, message)
+        } catch (e: Exception) {
+            Result.Error(e, "Erreur lors de la mise à jour du mot de passe")
+        }
+    }
 }

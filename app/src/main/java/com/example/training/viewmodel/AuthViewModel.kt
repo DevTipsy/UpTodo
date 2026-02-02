@@ -131,4 +131,101 @@ class AuthViewModel : ViewModel() {
             _uiEvent.send(UiEvent.Navigate(Routes.LOGIN))
         }
     }
+
+    /**
+     * Mettre à jour le nom de l'utilisateur
+     */
+    fun updateUserName(prenom: String, nom: String) {
+        if (prenom.isBlank() || nom.isBlank()) {
+            viewModelScope.launch {
+                _uiEvent.send(UiEvent.ShowSnackbar("Le prénom et le nom sont requis"))
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            when (val result = authRepository.updateUserName(prenom, nom)) {
+                is Result.Success -> {
+                    // Recharger l'utilisateur pour mettre à jour l'état
+                    loadCurrentUser()
+                    _uiEvent.send(UiEvent.ShowSnackbar("Nom mis à jour"))
+                }
+                is Result.Error -> {
+                    val message = result.message ?: "Erreur lors de la mise à jour"
+                    _uiEvent.send(UiEvent.ShowSnackbar(message))
+                }
+                Result.Loading -> {}
+            }
+
+            _isLoading.value = false
+        }
+    }
+
+    /**
+     * Mettre à jour l'email de l'utilisateur
+     */
+    fun updateUserEmail(newEmail: String) {
+        if (newEmail.isBlank()) {
+            viewModelScope.launch {
+                _uiEvent.send(UiEvent.ShowSnackbar("Email requis"))
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            when (val result = authRepository.updateUserEmail(newEmail)) {
+                is Result.Success -> {
+                    loadCurrentUser()
+                    _uiEvent.send(UiEvent.ShowSnackbar("Email mis à jour"))
+                }
+                is Result.Error -> {
+                    val message = result.message ?: "Erreur lors de la mise à jour"
+                    _uiEvent.send(UiEvent.ShowSnackbar(message))
+                }
+                Result.Loading -> {}
+            }
+
+            _isLoading.value = false
+        }
+    }
+
+    /**
+     * Mettre à jour le mot de passe de l'utilisateur
+     */
+    fun updateUserPassword(newPassword: String) {
+        if (newPassword.isBlank()) {
+            viewModelScope.launch {
+                _uiEvent.send(UiEvent.ShowSnackbar("Le mot de passe est requis"))
+            }
+            return
+        }
+
+        if (newPassword.length < 6) {
+            viewModelScope.launch {
+                _uiEvent.send(UiEvent.ShowSnackbar("Le nouveau mot de passe doit contenir au moins 6 caractères"))
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            when (val result = authRepository.updateUserPassword(newPassword)) {
+                is Result.Success -> {
+                    _uiEvent.send(UiEvent.ShowSnackbar("Mot de passe mis à jour"))
+                }
+                is Result.Error -> {
+                    val message = result.message ?: "Erreur lors de la mise à jour"
+                    _uiEvent.send(UiEvent.ShowSnackbar(message))
+                }
+                Result.Loading -> {}
+            }
+
+            _isLoading.value = false
+        }
+    }
 }

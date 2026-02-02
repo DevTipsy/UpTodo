@@ -30,7 +30,7 @@ fun Avatar (
             painter = painterResource(R.drawable.avatar),
             contentDescription = "Avatar",
             modifier = Modifier
-                .size(60.dp)
+                .size(50.dp)
                 .clip(CircleShape)
                 .clickable(onClick = onClick)
         )
