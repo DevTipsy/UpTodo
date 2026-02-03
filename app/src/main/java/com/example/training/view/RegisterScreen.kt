@@ -92,7 +92,7 @@ fun RegisterScreen(
         OutlinedTextField(
             value = prenom,
             onValueChange = { prenom = it },
-            label = { Text("Prénom") },
+            label = { Text(stringResource(R.string.prenom)) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF8875FF),
@@ -110,7 +110,7 @@ fun RegisterScreen(
         OutlinedTextField(
             value = nom,
             onValueChange = { nom = it },
-            label = { Text("Nom") },
+            label = { Text(stringResource(R.string.nom)) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF8875FF),
@@ -255,7 +255,7 @@ fun RegisterScreen(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Retour",
+                        contentDescription = stringResource(R.string.retour),
                         tint = Color.White
                     )
                 }

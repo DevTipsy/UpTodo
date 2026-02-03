@@ -20,12 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 import com.example.training.util.UiEvent
 import com.example.training.viewmodel.AuthViewModel
@@ -46,7 +48,6 @@ fun UserProfileScreen(
     var showEditNameDialog by remember { mutableStateOf(false) }
     var showEditPasswordDialog by remember { mutableStateOf(false) }
     var showEditEmailDialog by remember { mutableStateOf(false) }
-    var showEditImageDialog by remember { mutableStateOf(false) }
 
     // Observer les événements UI du ViewModel
     LaunchedEffect(authViewModel) {
@@ -91,12 +92,12 @@ fun UserProfileScreen(
                 IconButton(onClick = onNavigateBack) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Retour",
+                        contentDescription = stringResource(R.string.retour),
                         tint = Color.White
                     )
                 }
                 Text(
-                    text = "Profil",
+                    text = stringResource(R.string.profil),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -128,29 +129,22 @@ fun UserProfileScreen(
 
             // Options de modification
             ProfileOption(
-                title = "Modifier le nom",
+                title = stringResource(R.string.modifier_nom),
                 onClick = { showEditNameDialog = true }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             ProfileOption(
-                title = "Modifier le mot de passe",
+                title = stringResource(R.string.modifier_mot_de_passe),
                 onClick = { showEditPasswordDialog = true }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             ProfileOption(
-                title = "Modifier l'email",
+                title = stringResource(R.string.modifier_email),
                 onClick = { showEditEmailDialog = true }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ProfileOption(
-                title = "Modifier l'image",
-                onClick = { showEditImageDialog = true }
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -166,7 +160,7 @@ fun UserProfileScreen(
                 )
             ) {
                 Text(
-                    text = "Déconnexion",
+                    text = stringResource(R.string.deconnexion),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -186,10 +180,13 @@ fun UserProfileScreen(
     // Modales
     if (showEditNameDialog) {
         EditNameDialog(
-            currentPrenom = currentUser?.prenom ?: "",
-            currentNom = currentUser?.nom ?: "",
+            currentFullName = "${currentUser?.prenom ?: ""} ${currentUser?.nom ?: ""}".trim(),
             onDismiss = { showEditNameDialog = false },
-            onConfirm = { prenom, nom ->
+            onConfirm = { fullName ->
+                // Séparer le nom complet en prénom et nom
+                val parts = fullName.trim().split(" ", limit = 2)
+                val prenom = parts.getOrNull(0) ?: ""
+                val nom = parts.getOrNull(1) ?: ""
                 authViewModel?.updateUserName(prenom, nom)
                 showEditNameDialog = false
             }
@@ -255,74 +252,52 @@ private fun ProfileOption(
 
 @Composable
 private fun EditNameDialog(
-    currentPrenom: String,
-    currentNom: String,
+    currentFullName: String,
     onDismiss: () -> Unit,
-    onConfirm: (String, String) -> Unit
+    onConfirm: (String) -> Unit
 ) {
-    var prenom by remember { mutableStateOf(currentPrenom) }
-    var nom by remember { mutableStateOf(currentNom) }
+    var fullName by remember { mutableStateOf(currentFullName) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Modifier le nom",
+                text = stringResource(R.string.modifier_nom),
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
-            Column {
-                OutlinedTextField(
-                    value = prenom,
-                    onValueChange = { prenom = it },
-                    label = { Text("Prénom") },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = Color(0xFF8875FF),
-                        unfocusedBorderColor = Color.Gray,
-                        focusedLabelColor = Color(0xFF8875FF),
-                        unfocusedLabelColor = Color.Gray
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = nom,
-                    onValueChange = { nom = it },
-                    label = { Text("Nom") },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = Color(0xFF8875FF),
-                        unfocusedBorderColor = Color.Gray,
-                        focusedLabelColor = Color(0xFF8875FF),
-                        unfocusedLabelColor = Color.Gray
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            OutlinedTextField(
+                value = fullName,
+                onValueChange = { fullName = it },
+                label = { Text(stringResource(R.string.nouveau_nom_complet)) },
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color(0xFF8875FF),
+                    unfocusedBorderColor = Color.Gray,
+                    focusedLabelColor = Color(0xFF8875FF),
+                    unfocusedLabelColor = Color.Gray
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
         },
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (prenom.isNotBlank() && nom.isNotBlank()) {
-                        onConfirm(prenom, nom)
+                    if (fullName.isNotBlank()) {
+                        onConfirm(fullName)
                     }
                 }
             ) {
-                Text("Confirmer", color = Color(0xFF8875FF))
+                Text(stringResource(R.string.confirmer), color = Color(0xFF8875FF))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Annuler", color = Color.Gray)
+                Text(stringResource(R.string.annuler), color = Color.Gray)
             }
         },
         containerColor = Color(0xFF1D1D1D)
@@ -340,29 +315,27 @@ private fun EditPasswordDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Modifier le mot de passe",
+                text = stringResource(R.string.modifier_mot_de_passe),
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
-            Column {
-                OutlinedTextField(
-                    value = newPassword,
-                    onValueChange = { newPassword = it },
-                    label = { Text("Nouveau mot de passe") },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = Color(0xFF8875FF),
-                        unfocusedBorderColor = Color.Gray,
-                        focusedLabelColor = Color(0xFF8875FF),
-                        unfocusedLabelColor = Color.Gray
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            OutlinedTextField(
+                value = newPassword,
+                onValueChange = { newPassword = it },
+                label = { Text(stringResource(R.string.nouveau_mot_de_passe)) },
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color(0xFF8875FF),
+                    unfocusedBorderColor = Color.Gray,
+                    focusedLabelColor = Color(0xFF8875FF),
+                    unfocusedLabelColor = Color.Gray
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
         },
         confirmButton = {
             TextButton(
@@ -372,12 +345,12 @@ private fun EditPasswordDialog(
                     }
                 }
             ) {
-                Text("Confirmer", color = Color(0xFF8875FF))
+                Text(stringResource(R.string.confirmer), color = Color(0xFF8875FF))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Annuler", color = Color.Gray)
+                Text(stringResource(R.string.annuler), color = Color.Gray)
             }
         },
         containerColor = Color(0xFF1D1D1D)
@@ -396,29 +369,27 @@ private fun EditEmailDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Modifier l'email",
+                text = stringResource(R.string.modifier_email),
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
-            Column {
-                OutlinedTextField(
-                    value = newEmail,
-                    onValueChange = { newEmail = it },
-                    label = { Text("Nouvel email") },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedBorderColor = Color(0xFF8875FF),
-                        unfocusedBorderColor = Color.Gray,
-                        focusedLabelColor = Color(0xFF8875FF),
-                        unfocusedLabelColor = Color.Gray
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
+            OutlinedTextField(
+                value = newEmail,
+                onValueChange = { newEmail = it },
+                label = { Text(stringResource(R.string.nouvel_email)) },
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color(0xFF8875FF),
+                    unfocusedBorderColor = Color.Gray,
+                    focusedLabelColor = Color(0xFF8875FF),
+                    unfocusedLabelColor = Color.Gray
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
         },
         confirmButton = {
             TextButton(
@@ -428,12 +399,12 @@ private fun EditEmailDialog(
                     }
                 }
             ) {
-                Text("Confirmer", color = Color(0xFF8875FF))
+                Text(stringResource(R.string.confirmer), color = Color(0xFF8875FF))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Annuler", color = Color.Gray)
+                Text(stringResource(R.string.annuler), color = Color.Gray)
             }
         },
         containerColor = Color(0xFF1D1D1D)

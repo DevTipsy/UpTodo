@@ -105,7 +105,7 @@ fun WelcomeScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
+                    contentDescription = stringResource(R.string.retour),
                     tint = Color.White
                 )
             }

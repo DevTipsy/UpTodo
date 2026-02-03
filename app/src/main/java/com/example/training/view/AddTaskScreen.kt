@@ -98,7 +98,7 @@ fun AddTaskScreen(
                 ) {
                     Image(
                         painter = painterResource(R.drawable.checklist),
-                        contentDescription = "Logo Checklist",
+                        contentDescription = stringResource(R.string.logo_checklist),
                         modifier = Modifier.size(227.dp)
                     )
 
@@ -146,7 +146,7 @@ fun AddTaskScreen(
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Ajouter une tâche",
+                contentDescription = stringResource(R.string.ajouter_tache),
                 tint = Color.White
             )
         }

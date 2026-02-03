@@ -80,7 +80,7 @@ fun TaskDetailScreen(
                 IconButton(onClick = onDismiss) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.close),
                         tint = Color.White
                     )
                 }

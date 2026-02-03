@@ -15,11 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 import com.example.training.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
@@ -87,7 +89,7 @@ private fun CalendarHeader(
         IconButton(onClick = onPreviousDay) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowLeft,
-                contentDescription = "Jour précédent",
+                contentDescription = stringResource(R.string.jour_precedent),
                 tint = Color.White,
                 modifier = Modifier.size(32.dp)
             )
@@ -103,7 +105,7 @@ private fun CalendarHeader(
         IconButton(onClick = onNextDay) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = "Jour suivant",
+                contentDescription = stringResource(R.string.jour_suivant),
                 tint = Color.White,
                 modifier = Modifier.size(32.dp)
             )
