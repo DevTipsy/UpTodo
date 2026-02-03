@@ -49,7 +49,7 @@ fun LoginScreen(
                 }
                 is UiEvent.Navigate -> {
                     navController.navigate(event.route) {
-                        popUpTo(Routes.LOGIN) { inclusive = true }
+                        popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 }
                 UiEvent.NavigateBack -> { /* Pas utilisé ici */ }
@@ -156,7 +156,7 @@ fun LoginScreen(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable {
-                    navController.navigate(Routes.REGISTER)
+                    navController.navigate(Screen.Register.route)
                 }
             )
         }

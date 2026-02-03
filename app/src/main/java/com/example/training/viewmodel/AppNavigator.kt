@@ -42,95 +42,95 @@ fun AppNavigator(
     // Navigation de intro vers onboarding après 2s
     LaunchedEffect(Unit) {
         delay(2000L)
-        navController.navigate(Routes.ONBOARDING) {
-            popUpTo(Routes.INTRO) { inclusive = true }
+        navController.navigate(Screen.Onboarding.route) {
+            popUpTo(Screen.Intro.route) { inclusive = true }
         }
     }
 
     Box {
         NavHost(
             navController = navController,
-            startDestination = Routes.INTRO,
+            startDestination = Screen.Intro.route,
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None }
         ) {
-            composable(Routes.INTRO) {
+            composable(Screen.Intro.route) {
                 IntroScreen()
             }
 
-            composable(Routes.ONBOARDING) {
+            composable(Screen.Onboarding.route) {
                 OnboardingScreen(
                     viewModel = onboardingViewModel,
                     onComplete = {
-                        navController.navigate(Routes.WELCOME) {
-                            popUpTo(Routes.ONBOARDING) { inclusive = true }
+                        navController.navigate(Screen.Welcome.route) {
+                            popUpTo(Screen.Onboarding.route) { inclusive = true }
                         }
                     }
                 )
             }
 
-            composable(Routes.WELCOME) {
+            composable(Screen.Welcome.route) {
                 WelcomeScreen(
                     onLogin = {
-                        navController.navigate(Routes.LOGIN) {
+                        navController.navigate(Screen.Login.route) {
                             launchSingleTop = true
                         }
                     },
                     onRegister = {
-                        navController.navigate(Routes.REGISTER) {
+                        navController.navigate(Screen.Register.route) {
                             launchSingleTop = true
                         }
                     },
                     onNavigateBack = {
                         onboardingViewModel.skipToEnd()
-                        navController.navigate(Routes.ONBOARDING) {
-                            popUpTo(Routes.WELCOME) { inclusive = true }
+                        navController.navigate(Screen.Onboarding.route) {
+                            popUpTo(Screen.Welcome.route) { inclusive = true }
                         }
                     }
                 )
             }
 
-            composable(Routes.LOGIN) {
+            composable(Screen.Login.route) {
                 LoginScreen(
                     navController = navController,
                     viewModel = authViewModel,
                     onNavigateBack = {
                         onboardingViewModel.skipToEnd()
-                        navController.navigate(Routes.ONBOARDING) {
-                            popUpTo(Routes.LOGIN) { inclusive = true }
+                        navController.navigate(Screen.Onboarding.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
                         }
                     }
                 )
             }
 
-            composable(Routes.REGISTER) {
+            composable(Screen.Register.route) {
                 RegisterScreen(
                     navController = navController,
                     viewModel = authViewModel,
                     onNavigateBack = {
                         onboardingViewModel.skipToEnd()
-                        navController.navigate(Routes.ONBOARDING) {
-                            popUpTo(Routes.REGISTER) { inclusive = true }
+                        navController.navigate(Screen.Onboarding.route) {
+                            popUpTo(Screen.Register.route) { inclusive = true }
                         }
                     }
                 )
             }
 
-            composable(Routes.HOME) {
+            composable(Screen.Home.route) {
                 AddTaskScreen(
                     authViewModel = authViewModel,
                     viewModel = taskViewModel,
                     categoryViewModel = categoryViewModel,
                     onAddTask = { showTaskDetail = true },
                     onNavigateToProfile = {
-                        navController.navigate(Routes.USER_PROFILE)
+                        navController.navigate(Screen.UserProfile.route)
                     }
                 )
             }
 
-            composable(Routes.USER_PROFILE) {
+            composable(Screen.UserProfile.route) {
                 UserProfileScreen(
                     navController = navController,
                     authViewModel = authViewModel,

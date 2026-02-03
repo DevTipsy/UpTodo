@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.training.R
-import com.example.training.ui.theme.TrainingTheme
+import com.example.training.ui.theme.*
 import com.example.training.util.UiEvent
 import com.example.training.viewmodel.AuthViewModel
 import com.example.training.viewmodel.Routes
@@ -44,6 +45,7 @@ fun UserProfileScreen(
     val currentUser by authViewModel?.currentUser?.collectAsState() ?: return
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var showEditNameDialog by remember { mutableStateOf(false) }
     var showEditPasswordDialog by remember { mutableStateOf(false) }
@@ -55,7 +57,9 @@ fun UserProfileScreen(
             when (event) {
                 is UiEvent.ShowSnackbar -> {
                     scope.launch {
-                        snackbarHostState.showSnackbar(event.message)
+                        // Convertir le @StringRes en String
+                        val message = context.getString(event.messageRes)
+                        snackbarHostState.showSnackbar(message)
                     }
                 }
                 is UiEvent.Navigate -> {
@@ -72,7 +76,7 @@ fun UserProfileScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(AppBackground)
     ) {
         Column(
             modifier = Modifier
@@ -93,14 +97,14 @@ fun UserProfileScreen(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = stringResource(R.string.retour),
-                        tint = Color.White
+                        tint = TextPrimary
                     )
                 }
                 Text(
                     text = stringResource(R.string.profil),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = TextPrimary,
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -112,7 +116,7 @@ fun UserProfileScreen(
                 text = "${currentUser?.prenom ?: ""} ${currentUser?.nom ?: ""}",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = TextPrimary,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -121,7 +125,7 @@ fun UserProfileScreen(
             Text(
                 text = currentUser?.email ?: "",
                 fontSize = 14.sp,
-                color = Color.White.copy(alpha = 0.6f),
+                color = TextSecondary,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -156,14 +160,14 @@ fun UserProfileScreen(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red.copy(alpha = 0.8f)
+                    containerColor = ErrorRed
                 )
             ) {
                 Text(
                     text = stringResource(R.string.deconnexion),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = TextPrimary
                 )
             }
         }
@@ -225,7 +229,7 @@ private fun ProfileOption(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF1D1D1D)
+            containerColor = AppSurface
         ),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -239,12 +243,12 @@ private fun ProfileOption(
             Text(
                 text = title,
                 fontSize = 16.sp,
-                color = Color.White
+                color = TextPrimary
             )
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
-                tint = Color.White.copy(alpha = 0.6f)
+                tint = TextSecondary
             )
         }
     }
@@ -263,7 +267,7 @@ private fun EditNameDialog(
         title = {
             Text(
                 text = stringResource(R.string.modifier_nom),
-                color = Color.White,
+                color = TextPrimary,
                 fontWeight = FontWeight.Bold
             )
         },
@@ -274,12 +278,12 @@ private fun EditNameDialog(
                 label = { Text(stringResource(R.string.nouveau_nom_complet)) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    focusedBorderColor = Color(0xFF8875FF),
-                    unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = Color(0xFF8875FF),
-                    unfocusedLabelColor = Color.Gray
+                    focusedTextColor = TextPrimary,
+                    unfocusedTextColor = TextPrimary,
+                    focusedBorderColor = AppPrimary,
+                    unfocusedBorderColor = BorderGray,
+                    focusedLabelColor = AppPrimary,
+                    unfocusedLabelColor = BorderGray
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -292,15 +296,15 @@ private fun EditNameDialog(
                     }
                 }
             ) {
-                Text(stringResource(R.string.confirmer), color = Color(0xFF8875FF))
+                Text(stringResource(R.string.confirmer), color = AppPrimary)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.annuler), color = Color.Gray)
+                Text(stringResource(R.string.annuler), color = BorderGray)
             }
         },
-        containerColor = Color(0xFF1D1D1D)
+        containerColor = AppSurface
     )
 }
 
@@ -316,7 +320,7 @@ private fun EditPasswordDialog(
         title = {
             Text(
                 text = stringResource(R.string.modifier_mot_de_passe),
-                color = Color.White,
+                color = TextPrimary,
                 fontWeight = FontWeight.Bold
             )
         },
@@ -327,12 +331,12 @@ private fun EditPasswordDialog(
                 label = { Text(stringResource(R.string.nouveau_mot_de_passe)) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    focusedBorderColor = Color(0xFF8875FF),
-                    unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = Color(0xFF8875FF),
-                    unfocusedLabelColor = Color.Gray
+                    focusedTextColor = TextPrimary,
+                    unfocusedTextColor = TextPrimary,
+                    focusedBorderColor = AppPrimary,
+                    unfocusedBorderColor = BorderGray,
+                    focusedLabelColor = AppPrimary,
+                    unfocusedLabelColor = BorderGray
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -345,15 +349,15 @@ private fun EditPasswordDialog(
                     }
                 }
             ) {
-                Text(stringResource(R.string.confirmer), color = Color(0xFF8875FF))
+                Text(stringResource(R.string.confirmer), color = AppPrimary)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.annuler), color = Color.Gray)
+                Text(stringResource(R.string.annuler), color = BorderGray)
             }
         },
-        containerColor = Color(0xFF1D1D1D)
+        containerColor = AppSurface
     )
 }
 
@@ -370,7 +374,7 @@ private fun EditEmailDialog(
         title = {
             Text(
                 text = stringResource(R.string.modifier_email),
-                color = Color.White,
+                color = TextPrimary,
                 fontWeight = FontWeight.Bold
             )
         },
@@ -381,12 +385,12 @@ private fun EditEmailDialog(
                 label = { Text(stringResource(R.string.nouvel_email)) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    focusedBorderColor = Color(0xFF8875FF),
-                    unfocusedBorderColor = Color.Gray,
-                    focusedLabelColor = Color(0xFF8875FF),
-                    unfocusedLabelColor = Color.Gray
+                    focusedTextColor = TextPrimary,
+                    unfocusedTextColor = TextPrimary,
+                    focusedBorderColor = AppPrimary,
+                    unfocusedBorderColor = BorderGray,
+                    focusedLabelColor = AppPrimary,
+                    unfocusedLabelColor = BorderGray
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -399,15 +403,15 @@ private fun EditEmailDialog(
                     }
                 }
             ) {
-                Text(stringResource(R.string.confirmer), color = Color(0xFF8875FF))
+                Text(stringResource(R.string.confirmer), color = AppPrimary)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.annuler), color = Color.Gray)
+                Text(stringResource(R.string.annuler), color = BorderGray)
             }
         },
-        containerColor = Color(0xFF1D1D1D)
+        containerColor = AppSurface
     )
 }
 

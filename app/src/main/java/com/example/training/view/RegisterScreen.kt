@@ -56,7 +56,7 @@ fun RegisterScreen(
                 }
                 is UiEvent.Navigate -> {
                     navController.navigate(event.route) {
-                        popUpTo(Routes.REGISTER) { inclusive = true }
+                        popUpTo(Screen.Register.route) { inclusive = true }
                     }
                 }
                 UiEvent.NavigateBack -> {}
@@ -240,7 +240,7 @@ fun RegisterScreen(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable {
-                    navController.navigate(Routes.LOGIN)
+                    navController.navigate(Screen.Login.route)
                 }
             )
         }

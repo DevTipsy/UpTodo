@@ -126,7 +126,10 @@ fun AddTaskScreen(
                         .padding(16.dp)
                         .padding(bottom = 80.dp) // Espace pour le FAB
                 ) {
-                    items(filteredTasks) { task ->
+                    items(
+                        items = filteredTasks,
+                        key = { task -> task.id }  // ← KEY ajouté pour optimisation
+                    ) { task ->
                         TaskItem(
                             task = task,
                             category = categories.find { it.name == task.category }

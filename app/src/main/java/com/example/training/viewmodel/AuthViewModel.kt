@@ -2,6 +2,7 @@ package com.example.training.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.training.R
 import com.example.training.data.mapper.UserMapper.toDomain
 import com.example.training.model.User
 import com.example.training.repository.AuthRepository
@@ -55,7 +56,7 @@ class AuthViewModel : ViewModel() {
                     // Convertir UserDto → User avec le mapper
                     _currentUser.value = result.data.toDomain()
                     _uiEvent.send(UiEvent.ShowSnackbar("Connexion réussie"))
-                    _uiEvent.send(UiEvent.Navigate(Routes.HOME))
+                    _uiEvent.send(UiEvent.Navigate(Screen.Home.route))
                 }
                 is Result.Error -> {
                     // Utiliser le message custom si disponible
@@ -96,7 +97,7 @@ class AuthViewModel : ViewModel() {
                     // Convertir UserDto → User avec le mapper
                     _currentUser.value = result.data.toDomain()
                     _uiEvent.send(UiEvent.ShowSnackbar("Compte créé avec succès"))
-                    _uiEvent.send(UiEvent.Navigate(Routes.HOME))
+                    _uiEvent.send(UiEvent.Navigate(Screen.Home.route))
                 }
                 is Result.Error -> {
                     val message = result.message ?: result.exception.message ?: "Erreur d'inscription"
@@ -127,8 +128,8 @@ class AuthViewModel : ViewModel() {
         authRepository.signOut()
         _currentUser.value = null
         viewModelScope.launch {
-            _uiEvent.send(UiEvent.ShowSnackbar("Déconnexion réussie"))
-            _uiEvent.send(UiEvent.Navigate(Routes.LOGIN))
+            _uiEvent.send(UiEvent.ShowSnackbar(R.string.success_logout))
+            _uiEvent.send(UiEvent.Navigate(Screen.Login.route))
         }
     }
 
@@ -138,7 +139,7 @@ class AuthViewModel : ViewModel() {
     fun updateUserName(prenom: String, nom: String) {
         if (prenom.isBlank() || nom.isBlank()) {
             viewModelScope.launch {
-                _uiEvent.send(UiEvent.ShowSnackbar("Le prénom et le nom sont requis"))
+                _uiEvent.send(UiEvent.ShowSnackbar(R.string.validation_name_required))
             }
             return
         }
@@ -150,11 +151,11 @@ class AuthViewModel : ViewModel() {
                 is Result.Success -> {
                     // Recharger l'utilisateur pour mettre à jour l'état
                     loadCurrentUser()
-                    _uiEvent.send(UiEvent.ShowSnackbar("Nom mis à jour"))
+                    _uiEvent.send(UiEvent.ShowSnackbar(R.string.success_name_updated))
                 }
                 is Result.Error -> {
-                    val message = result.message ?: "Erreur lors de la mise à jour"
-                    _uiEvent.send(UiEvent.ShowSnackbar(message))
+                    val messageRes = result.messageRes ?: R.string.error_generic
+                    _uiEvent.send(UiEvent.ShowSnackbar(messageRes))
                 }
                 Result.Loading -> {}
             }
@@ -169,7 +170,7 @@ class AuthViewModel : ViewModel() {
     fun updateUserEmail(newEmail: String) {
         if (newEmail.isBlank()) {
             viewModelScope.launch {
-                _uiEvent.send(UiEvent.ShowSnackbar("Email requis"))
+                _uiEvent.send(UiEvent.ShowSnackbar(R.string.validation_email_required))
             }
             return
         }
@@ -180,11 +181,11 @@ class AuthViewModel : ViewModel() {
             when (val result = authRepository.updateUserEmail(newEmail)) {
                 is Result.Success -> {
                     loadCurrentUser()
-                    _uiEvent.send(UiEvent.ShowSnackbar("Email mis à jour"))
+                    _uiEvent.send(UiEvent.ShowSnackbar(R.string.success_email_updated))
                 }
                 is Result.Error -> {
-                    val message = result.message ?: "Erreur lors de la mise à jour"
-                    _uiEvent.send(UiEvent.ShowSnackbar(message))
+                    val messageRes = result.messageRes ?: R.string.error_generic
+                    _uiEvent.send(UiEvent.ShowSnackbar(messageRes))
                 }
                 Result.Loading -> {}
             }
@@ -199,14 +200,14 @@ class AuthViewModel : ViewModel() {
     fun updateUserPassword(newPassword: String) {
         if (newPassword.isBlank()) {
             viewModelScope.launch {
-                _uiEvent.send(UiEvent.ShowSnackbar("Le mot de passe est requis"))
+                _uiEvent.send(UiEvent.ShowSnackbar(R.string.validation_password_required))
             }
             return
         }
 
         if (newPassword.length < 6) {
             viewModelScope.launch {
-                _uiEvent.send(UiEvent.ShowSnackbar("Le nouveau mot de passe doit contenir au moins 6 caractères"))
+                _uiEvent.send(UiEvent.ShowSnackbar(R.string.error_weak_password))
             }
             return
         }
@@ -216,11 +217,11 @@ class AuthViewModel : ViewModel() {
 
             when (val result = authRepository.updateUserPassword(newPassword)) {
                 is Result.Success -> {
-                    _uiEvent.send(UiEvent.ShowSnackbar("Mot de passe mis à jour"))
+                    _uiEvent.send(UiEvent.ShowSnackbar(R.string.success_password_updated))
                 }
                 is Result.Error -> {
-                    val message = result.message ?: "Erreur lors de la mise à jour"
-                    _uiEvent.send(UiEvent.ShowSnackbar(message))
+                    val messageRes = result.messageRes ?: R.string.error_generic
+                    _uiEvent.send(UiEvent.ShowSnackbar(messageRes))
                 }
                 Result.Loading -> {}
             }

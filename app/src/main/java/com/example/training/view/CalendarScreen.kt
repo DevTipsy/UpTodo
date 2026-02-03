@@ -62,7 +62,10 @@ fun CalendarScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
-            items(calendarViewModel.weekDays) { day ->
+            items(
+                items = calendarViewModel.weekDays,
+                key = { day -> day.timeInMillis }  // ← KEY ajouté pour optimisation
+            ) { day ->
                 DayCard(
                     day = day,
                     isSelected = calendarViewModel.isSameDay(day, calendarViewModel.selectedDate),
