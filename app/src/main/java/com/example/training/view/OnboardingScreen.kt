@@ -123,7 +123,7 @@ fun OnboardingScreen(
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF8875FF)
+                            containerColor = AppPrimary
                         ),
                         modifier = Modifier
                             .width(if (viewModel.isLastPage) 155.dp else 100.dp)

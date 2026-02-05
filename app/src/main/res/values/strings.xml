@@ -46,4 +46,81 @@
     <!-- Home -->
     <string name="bienvenue">Bienvenue !</string>
     <string name="logout">Se déconnecter</string>
+
+    <!-- User Profile -->
+    <string name="profil">Profil</string>
+    <string name="full_name">Nom complet</string>
+    <string name="modifier_nom">Modifier le nom</string>
+    <string name="modifier_mot_de_passe">Modifier le mot de passe</string>
+    <string name="modifier_email">Modifier l\'email</string>
+    <string name="deconnexion">Déconnexion</string>
+
+    <!-- Edit Dialogs -->
+    <string name="nouveau_nom_complet">Nouveau nom complet</string>
+    <string name="nouveau_mot_de_passe">Nouveau mot de passe</string>
+    <string name="nouvel_email">Nouvel email</string>
+    <string name="confirmer">Confirmer</string>
+    <string name="annuler">Annuler</string>
+
+    <!-- Register -->
+    <string name="prenom">Prénom</string>
+    <string name="nom">Nom</string>
+
+    <!-- Content Descriptions -->
+    <string name="retour">Retour</string>
+    <string name="logo_uptodo">Logo UpTodo</string>
+    <string name="avatar">Avatar</string>
+    <string name="ajouter_tache">Ajouter une tâche</string>
+    <string name="jour_precedent">Jour précédent</string>
+    <string name="jour_suivant">Jour suivant</string>
+    <string name="logo_checklist">Logo Checklist</string>
+    <string name="close">Close</string>
+
+    <!-- Error Messages - Authentication -->
+    <string name="error_user_not_connected">Utilisateur non connecté</string>
+    <string name="error_email_already_in_use">Cet email est déjà utilisé</string>
+    <string name="error_invalid_email">Email invalide</string>
+    <string name="error_requires_recent_login">Session expirée. Veuillez vous reconnecter puis réessayer</string>
+    <string name="error_weak_password">Le nouveau mot de passe est trop faible (min 6 caractères)</string>
+    <string name="error_wrong_password">Mot de passe incorrect</string>
+    <string name="error_user_not_found">Aucun compte avec cet email</string>
+    <string name="error_user_disabled">Compte désactivé</string>
+
+    <!-- Error Messages - Generic -->
+    <string name="error_generic">Une erreur est survenue</string>
+    <string name="error_update_name">Erreur lors de la mise à jour du nom</string>
+    <string name="error_update_email">Erreur lors de la mise à jour de l\'email</string>
+    <string name="error_update_password">Erreur lors de la mise à jour du mot de passe</string>
+    <string name="error_connection">Erreur de connexion</string>
+    <string name="error_signup">Erreur d\'inscription</string>
+    <string name="error_profile_not_found">Profil utilisateur introuvable</string>
+    <string name="error_create_account">Échec de création du compte</string>
+    <string name="error_create_profile">Erreur lors de la création du profil</string>
+
+    <!-- Success Messages -->
+    <string name="success_name_updated">Nom mis à jour</string>
+    <string name="success_email_updated">Email mis à jour</string>
+    <string name="success_password_updated">Mot de passe mis à jour</string>
+    <string name="success_logout">Déconnexion réussie</string>
+
+    <!-- Validation Messages -->
+    <string name="validation_email_required">Email requis</string>
+    <string name="validation_password_required">Mot de passe requis</string>
+    <string name="validation_name_required">Nom requis</string>
+    <string name="validation_email_password_required">Email et mot de passe requis</string>
+    <string name="validation_all_fields_required">Tous les champs sont requis</string>
+    <string name="validation_password_min_6">Le mot de passe doit contenir au moins 6 caractères</string>
+    <string name="validation_title_required">Le titre est requis</string>
+
+    <!-- Success Messages - Auth -->
+    <string name="success_login">Connexion réussie</string>
+    <string name="success_account_created">Compte créé avec succès</string>
+
+    <!-- Success Messages - Tasks -->
+    <string name="success_task_added">Tâche ajoutée avec succès</string>
+    <string name="success_task_deleted">Tâche supprimée</string>
+
+    <!-- Error Messages - Tasks -->
+    <string name="error_task_update">Erreur de mise à jour</string>
+    <string name="error_task_delete">Erreur de suppression</string>
 </resources>
