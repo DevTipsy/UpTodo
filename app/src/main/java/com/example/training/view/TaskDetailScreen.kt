@@ -103,8 +103,8 @@ fun TaskDetailScreen(
                 placeholder = { Text(stringResource(R.string.task_name_placeholder), color = Color.White.copy(alpha = 0.5f)) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF8687E7),
-                    unfocusedBorderColor = Color(0xFF979797),
+                    focusedBorderColor = AppSecondaryPurple,
+                    unfocusedBorderColor = GrayMedium,
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White
                 ),
@@ -167,7 +167,7 @@ fun TaskDetailScreen(
                 OutlinedButton(
                     onClick = onDismiss,
                     colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = Color(0xFF8687E7)
+                        contentColor = AppSecondaryPurple
                     ),
                     shape = RoundedCornerShape(4.dp),
                     modifier = Modifier.weight(1f)
@@ -197,8 +197,8 @@ fun TaskDetailScreen(
                     },
                     enabled = title.isNotBlank() && !isAddingTask && currentUser != null,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF8687E7),
-                        disabledContainerColor = Color(0xFF8687E7).copy(alpha = 0.5f)
+                        containerColor = AppSecondaryPurple,
+                        disabledContainerColor = AppSecondaryPurple.copy(alpha = 0.5f)
                     ),
                     shape = RoundedCornerShape(4.dp),
                     modifier = Modifier.weight(1f)
@@ -309,7 +309,7 @@ private fun CategoryItem(
             .aspectRatio(1f)
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
-                color = if (isSelected) Color(0xFF8687E7) else Color(0xFF979797),
+                color = if (isSelected) AppSecondaryPurple else GrayMedium,
                 shape = RoundedCornerShape(4.dp)
             )
             .clickable(onClick = onClick)

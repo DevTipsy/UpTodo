@@ -129,7 +129,7 @@ private fun DayCard(
             .height(80.dp)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) Color(0xFF8875FF) else Color(0xFF1D1D1D)
+            containerColor = if (isSelected) AppPrimary else AppSurface
         ),
         shape = RoundedCornerShape(12.dp)
     ) {

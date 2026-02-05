@@ -32,7 +32,7 @@ import com.example.training.R
 import com.example.training.ui.theme.*
 import com.example.training.util.UiEvent
 import com.example.training.viewmodel.AuthViewModel
-import com.example.training.viewmodel.Routes
+import com.example.training.viewmodel.Screen
 import kotlinx.coroutines.launch
 
 @Composable

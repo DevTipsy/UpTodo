@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -25,7 +26,7 @@ import com.example.training.R
 import com.example.training.ui.theme.TrainingTheme
 import com.example.training.util.UiEvent
 import com.example.training.viewmodel.AuthViewModel
-import com.example.training.viewmodel.Routes
+import com.example.training.viewmodel.Screen
 
 @Composable
 fun LoginScreen(
@@ -39,13 +40,14 @@ fun LoginScreen(
     // Collecter les StateFlows
     val isLoading by viewModel.isLoading.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     // Collecter les UiEvents pour navigation et snackbars
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.ShowSnackbar -> {
-                    snackbarHostState.showSnackbar(event.message)
+                    snackbarHostState.showSnackbar(context.getString(event.messageRes))
                 }
                 is UiEvent.Navigate -> {
                     navController.navigate(event.route) {
@@ -89,7 +91,7 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF8875FF),
+                focusedBorderColor = AppPrimary,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
@@ -109,7 +111,7 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF8875FF),
+                focusedBorderColor = AppPrimary,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
@@ -125,7 +127,7 @@ fun LoginScreen(
             onClick = { viewModel.signIn(email, password) },
             enabled = !isLoading,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF8875FF)
+                containerColor = AppPrimary
             ),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
             modifier = Modifier
@@ -152,7 +154,7 @@ fun LoginScreen(
             )
             Text(
                 text = stringResource(R.string.signup),
-                color = Color(0xFF8875FF),
+                color = AppPrimary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable {

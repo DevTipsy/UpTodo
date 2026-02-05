@@ -1,5 +1,6 @@
 package com.example.training.repository
 
+import com.example.training.R
 import com.example.training.data.dto.TaskDto
 import com.example.training.util.Result
 import com.google.firebase.firestore.FirebaseFirestore
@@ -76,12 +77,13 @@ class TaskRepository {
 
             Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Error(e, "Erreur lors de l'ajout de la tâche")
+            Result.Error(e, R.string.error_generic)
         }
     }
 
     /**
-     * Mettre à jour une tâche (optionnel - pour plus tard)
+     * Mettre à jour une tâche
+     * Prend l'ID de la tâche et un Map de champs à modifier
      */
     suspend fun updateTask(taskId: String, updates: Map<String, Any>): Result<Unit> {
         return try {
@@ -89,14 +91,16 @@ class TaskRepository {
                 .document(taskId)
                 .update(updates)
                 .await()
+
             Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Error(e, "Erreur lors de la mise à jour")
+            Result.Error(e, R.string.error_task_update)
         }
     }
 
     /**
-     * Supprimer une tâche (optionnel - pour plus tard)
+     * Supprimer une tâche
+     * Prend l'ID de la tâche à supprimer
      */
     suspend fun deleteTask(taskId: String): Result<Unit> {
         return try {
@@ -104,9 +108,10 @@ class TaskRepository {
                 .document(taskId)
                 .delete()
                 .await()
+
             Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Error(e, "Erreur lors de la suppression")
+            Result.Error(e, R.string.error_task_delete)
         }
     }
 }

@@ -22,7 +22,7 @@ class AuthRepository {
             // Authentifier avec Firebase Auth
             val authResult = auth.signInWithEmailAndPassword(email, password).await()
             val firebaseUser = authResult.user
-                ?: return Result.Error(Exception("Utilisateur null après connexion"))
+                ?: return Result.Error(Exception("Utilisateur null après connexion"), R.string.error_connection)
 
             // Charger le UserDto depuis Firestore
             val userDoc = firestore.collection("users")
@@ -31,20 +31,13 @@ class AuthRepository {
                 .await()
 
             val userDto = userDoc.toObject(UserDto::class.java)
-                ?: return Result.Error(Exception("Profil utilisateur introuvable"))
+                ?: return Result.Error(Exception("Profil utilisateur introuvable"), R.string.error_profile_not_found)
 
             Result.Success(userDto)
         } catch (e: FirebaseAuthException) {
-            val message = when (e.errorCode) {
-                "ERROR_INVALID_EMAIL" -> "Email invalide"
-                "ERROR_WRONG_PASSWORD" -> "Mot de passe incorrect"
-                "ERROR_USER_NOT_FOUND" -> "Aucun compte avec cet email"
-                "ERROR_USER_DISABLED" -> "Compte désactivé"
-                else -> "Erreur de connexion : ${e.message}"
-            }
-            Result.Error(e, message)
+            Result.Error(e, ErrorMapper.mapAuthError(e))
         } catch (e: Exception) {
-            Result.Error(e, "Erreur de connexion")
+            Result.Error(e, R.string.error_connection)
         }
     }
 
@@ -62,7 +55,7 @@ class AuthRepository {
             // Créer le compte Firebase Auth
             val authResult = auth.createUserWithEmailAndPassword(email, password).await()
             val firebaseUser = authResult.user
-                ?: return Result.Error(Exception("Échec de création du compte"))
+                ?: return Result.Error(Exception("Échec de création du compte"), R.string.error_create_account)
 
             // Créer le UserDto
             val userDto = UserDto(
@@ -84,21 +77,15 @@ class AuthRepository {
                 firebaseUser.delete().await()
                 return Result.Error(
                     firestoreError,
-                    "Erreur lors de la création du profil"
+                    R.string.error_create_profile
                 )
             }
 
             Result.Success(userDto)
         } catch (e: FirebaseAuthException) {
-            val message = when (e.errorCode) {
-                "ERROR_WEAK_PASSWORD" -> "Mot de passe trop faible (min 6 caractères)"
-                "ERROR_EMAIL_ALREADY_IN_USE" -> "Cet email est déjà utilisé"
-                "ERROR_INVALID_EMAIL" -> "Email invalide"
-                else -> "Erreur d'inscription : ${e.message}"
-            }
-            Result.Error(e, message)
+            Result.Error(e, ErrorMapper.mapAuthError(e))
         } catch (e: Exception) {
-            Result.Error(e, "Erreur d'inscription")
+            Result.Error(e, R.string.error_signup)
         }
     }
 

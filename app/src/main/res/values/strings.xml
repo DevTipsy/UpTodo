@@ -107,4 +107,20 @@
     <string name="validation_email_required">Email requis</string>
     <string name="validation_password_required">Mot de passe requis</string>
     <string name="validation_name_required">Nom requis</string>
+    <string name="validation_email_password_required">Email et mot de passe requis</string>
+    <string name="validation_all_fields_required">Tous les champs sont requis</string>
+    <string name="validation_password_min_6">Le mot de passe doit contenir au moins 6 caractères</string>
+    <string name="validation_title_required">Le titre est requis</string>
+
+    <!-- Success Messages - Auth -->
+    <string name="success_login">Connexion réussie</string>
+    <string name="success_account_created">Compte créé avec succès</string>
+
+    <!-- Success Messages - Tasks -->
+    <string name="success_task_added">Tâche ajoutée avec succès</string>
+    <string name="success_task_deleted">Tâche supprimée</string>
+
+    <!-- Error Messages - Tasks -->
+    <string name="error_task_update">Erreur de mise à jour</string>
+    <string name="error_task_delete">Erreur de suppression</string>
 </resources>

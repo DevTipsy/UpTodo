@@ -67,7 +67,7 @@ fun WelcomeScreen(
         Button(
             onClick = onLogin,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF8875FF)
+                containerColor = AppPrimary
             ),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
             modifier = Modifier

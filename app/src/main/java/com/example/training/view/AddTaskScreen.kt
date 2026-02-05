@@ -145,7 +145,7 @@ fun AddTaskScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
-            containerColor = Color(0xFF8875FF)
+            containerColor = AppPrimary
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
@@ -167,8 +167,8 @@ private fun TaskItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF1D1D1D), RoundedCornerShape(8.dp))
-            .border(1.dp, Color(0xFF363636), RoundedCornerShape(8.dp))
+            .background(AppSurface, RoundedCornerShape(8.dp))
+            .border(1.dp, BorderDark, RoundedCornerShape(8.dp))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

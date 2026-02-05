@@ -43,7 +43,7 @@ class AuthViewModel : ViewModel() {
         // Validation locale (optionnelle)
         if (email.isBlank() || password.isBlank()) {
             viewModelScope.launch {
-                _uiEvent.send(UiEvent.ShowSnackbar("Email et mot de passe requis"))
+                _uiEvent.send(UiEvent.ShowSnackbar(R.string.validation_email_password_required))
             }
             return
         }
@@ -55,13 +55,12 @@ class AuthViewModel : ViewModel() {
                 is Result.Success -> {
                     // Convertir UserDto → User avec le mapper
                     _currentUser.value = result.data.toDomain()
-                    _uiEvent.send(UiEvent.ShowSnackbar("Connexion réussie"))
+                    _uiEvent.send(UiEvent.ShowSnackbar(R.string.success_login))
                     _uiEvent.send(UiEvent.Navigate(Screen.Home.route))
                 }
                 is Result.Error -> {
-                    // Utiliser le message custom si disponible
-                    val message = result.message ?: result.exception.message ?: "Erreur de connexion"
-                    _uiEvent.send(UiEvent.ShowSnackbar(message))
+                    val messageRes = result.messageRes ?: R.string.error_connection
+                    _uiEvent.send(UiEvent.ShowSnackbar(messageRes))
                 }
                 Result.Loading -> { /* Pas utilisé ici */ }
             }
@@ -77,14 +76,14 @@ class AuthViewModel : ViewModel() {
         // Validation locale
         if (email.isBlank() || password.isBlank() || prenom.isBlank() || nom.isBlank()) {
             viewModelScope.launch {
-                _uiEvent.send(UiEvent.ShowSnackbar("Tous les champs sont requis"))
+                _uiEvent.send(UiEvent.ShowSnackbar(R.string.validation_all_fields_required))
             }
             return
         }
 
         if (password.length < 6) {
             viewModelScope.launch {
-                _uiEvent.send(UiEvent.ShowSnackbar("Le mot de passe doit contenir au moins 6 caractères"))
+                _uiEvent.send(UiEvent.ShowSnackbar(R.string.validation_password_min_6))
             }
             return
         }
@@ -96,12 +95,12 @@ class AuthViewModel : ViewModel() {
                 is Result.Success -> {
                     // Convertir UserDto → User avec le mapper
                     _currentUser.value = result.data.toDomain()
-                    _uiEvent.send(UiEvent.ShowSnackbar("Compte créé avec succès"))
+                    _uiEvent.send(UiEvent.ShowSnackbar(R.string.success_account_created))
                     _uiEvent.send(UiEvent.Navigate(Screen.Home.route))
                 }
                 is Result.Error -> {
-                    val message = result.message ?: result.exception.message ?: "Erreur d'inscription"
-                    _uiEvent.send(UiEvent.ShowSnackbar(message))
+                    val messageRes = result.messageRes ?: R.string.error_signup
+                    _uiEvent.send(UiEvent.ShowSnackbar(messageRes))
                 }
                 Result.Loading -> {}
             }

@@ -2,6 +2,7 @@ package com.example.training.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.training.R
 import com.example.training.data.mapper.TaskMapper.toDomain
 import com.example.training.data.mapper.TaskMapper.toDto
 import com.example.training.model.Task
@@ -50,9 +51,7 @@ class TaskViewModel : ViewModel() {
                     taskDtos.map { it.toDomain() }.sortedBy { it.date }
                 }
                 .catch { e ->
-                    _uiEvent.send(UiEvent.ShowSnackbar(
-                        e.message ?: "Erreur de chargement des tâches"
-                    ))
+                    _uiEvent.send(UiEvent.ShowSnackbar(R.string.error_generic))
                 }
                 .collect { taskList ->
                     _tasks.value = taskList
@@ -90,7 +89,7 @@ class TaskViewModel : ViewModel() {
     ) {
         if (title.isBlank()) {
             viewModelScope.launch {
-                _uiEvent.send(UiEvent.ShowSnackbar("Le titre est requis"))
+                _uiEvent.send(UiEvent.ShowSnackbar(R.string.validation_title_required))
             }
             return
         }
@@ -113,16 +112,16 @@ class TaskViewModel : ViewModel() {
                 when (val result = taskRepository.addTask(taskDto)) {
                     is Result.Success -> {
                         onSuccess()
-                        _uiEvent.send(UiEvent.ShowSnackbar("Tâche ajoutée avec succès"))
+                        _uiEvent.send(UiEvent.ShowSnackbar(R.string.success_task_added))
                     }
                     is Result.Error -> {
-                        val message = result.message ?: "Erreur lors de l'ajout"
-                        _uiEvent.send(UiEvent.ShowSnackbar(message))
+                        val messageRes = result.messageRes ?: R.string.error_generic
+                        _uiEvent.send(UiEvent.ShowSnackbar(messageRes))
                     }
                     Result.Loading -> {}
                 }
             } catch (e: Exception) {
-                _uiEvent.send(UiEvent.ShowSnackbar("Erreur: ${e.message}"))
+                _uiEvent.send(UiEvent.ShowSnackbar(R.string.error_generic))
             } finally {
                 _isAddingTask.value = false
             }
@@ -138,7 +137,7 @@ class TaskViewModel : ViewModel() {
             val updates = mapOf("isCompleted" to isCompleted)
             when (val result = taskRepository.updateTask(taskId, updates)) {
                 is Result.Error -> {
-                    _uiEvent.send(UiEvent.ShowSnackbar("Erreur de mise à jour"))
+                    _uiEvent.send(UiEvent.ShowSnackbar(R.string.error_task_update))
                 }
                 else -> {}  // Succès silencieux (la UI se met à jour via le Flow)
             }
@@ -152,11 +151,11 @@ class TaskViewModel : ViewModel() {
     fun deleteTask(taskId: String) {
         viewModelScope.launch {
             when (val result = taskRepository.deleteTask(taskId)) {
-                is Result.Success<*> -> {
-                    _uiEvent.send(UiEvent.ShowSnackbar("Tâche supprimée"))
+                is Result.Success -> {
+                    _uiEvent.send(UiEvent.ShowSnackbar(R.string.success_task_deleted))
                 }
                 is Result.Error -> {
-                    _uiEvent.send(UiEvent.ShowSnackbar("Erreur de suppression"))
+                    _uiEvent.send(UiEvent.ShowSnackbar(R.string.error_task_delete))
                 }
                 Result.Loading -> {}
             }

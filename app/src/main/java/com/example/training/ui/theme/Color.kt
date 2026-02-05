@@ -44,6 +44,16 @@ val BorderGray = Color(0xFF808080)
 /** Bordure avec opacité (30%) */
 val BorderLight = Color(0x4DFFFFFF)
 
+/** Bordure sombre pour les cards */
+val BorderDark = Color(0xFF363636)
+
+// === Couleurs secondaires ===
+/** Violet secondaire légèrement différent */
+val AppSecondaryPurple = Color(0xFF8687E7)
+
+/** Gris moyen pour les éléments désactivés */
+val GrayMedium = Color(0xFF979797)
+
 // === Anciennes couleurs Material (conservées pour compatibilité) ===
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
