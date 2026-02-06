@@ -1,4 +1,4 @@
-package com.example.training.view
+package com.example.training.view.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,7 +19,7 @@ import com.example.training.ui.theme.TrainingTheme
 
 @Composable
 fun Avatar (
-    modifier : Modifier = Modifier,
+    modifier : Modifier = Modifier.Companion,
     onClick: () -> Unit = {}
 ) {
     // Image de l'avatar du user connecté
@@ -30,7 +30,7 @@ fun Avatar (
         Image(
             painter = painterResource(R.drawable.avatar),
             contentDescription = stringResource(R.string.avatar),
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .size(50.dp)
                 .clip(CircleShape)
                 .clickable(onClick = onClick)

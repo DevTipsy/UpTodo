@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.training.ui.theme.TrainingTheme
-import com.example.training.viewmodel.AppNavigator
+import com.example.training.navigation.AppNavigator
 import com.example.training.viewmodel.AuthViewModel
 import com.example.training.viewmodel.CategoryViewModel
 import com.example.training.viewmodel.OnboardingViewModel

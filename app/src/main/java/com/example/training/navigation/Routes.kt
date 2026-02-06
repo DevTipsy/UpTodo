@@ -1,4 +1,4 @@
-package com.example.training.viewmodel
+package com.example.training.navigation
 
 /**
  * Sealed class définissant toutes les routes de navigation de l'application.

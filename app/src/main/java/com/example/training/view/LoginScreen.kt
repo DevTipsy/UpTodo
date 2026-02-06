@@ -26,7 +26,7 @@ import com.example.training.R
 import com.example.training.ui.theme.*
 import com.example.training.util.UiEvent
 import com.example.training.viewmodel.AuthViewModel
-import com.example.training.viewmodel.Screen
+import com.example.training.navigation.Screen
 
 @Composable
 fun LoginScreen(
@@ -51,7 +51,7 @@ fun LoginScreen(
                 }
                 is UiEvent.Navigate -> {
                     navController.navigate(event.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+                        popUpTo(0)
                     }
                 }
                 UiEvent.NavigateBack -> { /* Pas utilisé ici */ }

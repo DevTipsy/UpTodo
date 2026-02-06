@@ -3,8 +3,8 @@ package com.example.training.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.training.R
-import com.example.training.data.mapper.TaskMapper.toDomain
-import com.example.training.data.mapper.TaskMapper.toDto
+import com.example.training.data.mapper.toDomain
+import com.example.training.data.mapper.toDto
 import com.example.training.model.Task
 import com.example.training.repository.TaskRepository
 import com.example.training.util.Result

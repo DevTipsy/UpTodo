@@ -1,4 +1,4 @@
-package com.example.training.view.dialogs
+package com.example.training.view.components.dialogs
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
@@ -18,41 +18,44 @@ import com.example.training.R
 import com.example.training.ui.theme.*
 
 /**
- * Dialog pour modifier le mot de passe
+ * Dialog pour modifier l'email
  *
  * ## Rôle
- * - Affiche un AlertDialog avec TextField pour le nouveau mot de passe
- * - Valide longueur minimale (6 caractères)
- * - Callback onConfirm avec le nouveau mot de passe
+ * - Affiche un AlertDialog avec TextField pour le nouvel email
+ * - Valide format email (contient @)
+ * - Callback onConfirm avec le nouvel email
  *
  * ## Communication
- * Parent (UserProfileScreen) ←→ EditPasswordDialog
- *   - Dialog appelle onConfirm(password) ou onDismiss()
+ * Parent (UserProfileScreen) ←→ EditEmailDialog
+ *   - Parent passe currentEmail
+ *   - Dialog appelle onConfirm(email) ou onDismiss()
  *
+ * @param currentEmail Email actuel à pré-remplir
  * @param onDismiss Callback pour annuler
- * @param onConfirm Callback avec le nouveau mot de passe
+ * @param onConfirm Callback avec le nouvel email
  */
 @Composable
-fun EditPasswordDialog(
+fun EditEmailDialog(
+    currentEmail: String,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
 ) {
-    var newPassword by remember { mutableStateOf("") }
+    var newEmail by remember { mutableStateOf(currentEmail) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = stringResource(R.string.modifier_mot_de_passe),
+                text = stringResource(R.string.modifier_email),
                 color = TextPrimary,
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
             OutlinedTextField(
-                value = newPassword,
-                onValueChange = { newPassword = it },
-                label = { Text(stringResource(R.string.nouveau_mot_de_passe)) },
+                value = newEmail,
+                onValueChange = { newEmail = it },
+                label = { Text(stringResource(R.string.nouvel_email)) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = TextPrimary,
@@ -68,8 +71,8 @@ fun EditPasswordDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (newPassword.isNotBlank() && newPassword.length >= 6) {
-                        onConfirm(newPassword)
+                    if (newEmail.isNotBlank() && newEmail.contains("@")) {
+                        onConfirm(newEmail)
                     }
                 }
             ) {

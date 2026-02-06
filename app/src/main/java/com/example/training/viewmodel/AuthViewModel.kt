@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.training.R
 import com.example.training.data.mapper.UserMapper.toDomain
 import com.example.training.model.User
+import com.example.training.navigation.Screen
 import com.example.training.repository.AuthRepository
 import com.example.training.util.Result
 import com.example.training.util.UiEvent

@@ -1,4 +1,4 @@
-package com.example.training.view.dialogs
+package com.example.training.view.components.dialogs
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
@@ -18,44 +18,44 @@ import com.example.training.R
 import com.example.training.ui.theme.*
 
 /**
- * Dialog pour modifier l'email
+ * Dialog pour modifier le nom complet de l'utilisateur
  *
  * ## Rôle
- * - Affiche un AlertDialog avec TextField pour le nouvel email
- * - Valide format email (contient @)
- * - Callback onConfirm avec le nouvel email
+ * - Affiche un AlertDialog avec un TextField
+ * - Valide que le nom n'est pas vide
+ * - Callback onConfirm avec le nouveau nom
  *
  * ## Communication
- * Parent (UserProfileScreen) ←→ EditEmailDialog
- *   - Parent passe currentEmail
- *   - Dialog appelle onConfirm(email) ou onDismiss()
+ * Parent (UserProfileScreen) ←→ EditNameDialog
+ *   - Parent passe currentFullName
+ *   - Dialog appelle onConfirm(fullName) ou onDismiss()
  *
- * @param currentEmail Email actuel à pré-remplir
+ * @param currentFullName Nom complet actuel à pré-remplir
  * @param onDismiss Callback pour annuler
- * @param onConfirm Callback avec le nouvel email
+ * @param onConfirm Callback avec le nouveau nom complet
  */
 @Composable
-fun EditEmailDialog(
-    currentEmail: String,
+fun EditNameDialog(
+    currentFullName: String,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
 ) {
-    var newEmail by remember { mutableStateOf(currentEmail) }
+    var fullName by remember { mutableStateOf(currentFullName) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = stringResource(R.string.modifier_email),
+                text = stringResource(R.string.modifier_nom),
                 color = TextPrimary,
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
             OutlinedTextField(
-                value = newEmail,
-                onValueChange = { newEmail = it },
-                label = { Text(stringResource(R.string.nouvel_email)) },
+                value = fullName,
+                onValueChange = { fullName = it },
+                label = { Text(stringResource(R.string.nouveau_nom_complet)) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = TextPrimary,
@@ -71,8 +71,8 @@ fun EditEmailDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (newEmail.isNotBlank() && newEmail.contains("@")) {
-                        onConfirm(newEmail)
+                    if (fullName.isNotBlank()) {
+                        onConfirm(fullName)
                     }
                 }
             ) {

@@ -31,8 +31,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.training.R
 import com.example.training.ui.theme.*
 import com.example.training.util.UiEvent
+import com.example.training.view.components.Avatar
 import com.example.training.viewmodel.AuthViewModel
-import com.example.training.viewmodel.Screen
+import com.example.training.navigation.Screen
 import kotlinx.coroutines.launch
 
 @Composable

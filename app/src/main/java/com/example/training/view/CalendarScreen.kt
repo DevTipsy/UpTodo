@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.training.R
 import com.example.training.ui.theme.*
+import com.example.training.view.components.Avatar
 import com.example.training.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
 import java.util.*

@@ -2,7 +2,7 @@ package com.example.training.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.training.data.mapper.CategoryMapper.toDomain
+import com.example.training.data.mapper.toDomain
 import com.example.training.model.Category
 import com.example.training.repository.CategoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow

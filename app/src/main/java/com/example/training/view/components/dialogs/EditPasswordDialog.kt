@@ -1,4 +1,4 @@
-package com.example.training.view.dialogs
+package com.example.training.view.components.dialogs
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
@@ -18,44 +18,41 @@ import com.example.training.R
 import com.example.training.ui.theme.*
 
 /**
- * Dialog pour modifier le nom complet de l'utilisateur
+ * Dialog pour modifier le mot de passe
  *
  * ## Rôle
- * - Affiche un AlertDialog avec un TextField
- * - Valide que le nom n'est pas vide
- * - Callback onConfirm avec le nouveau nom
+ * - Affiche un AlertDialog avec TextField pour le nouveau mot de passe
+ * - Valide longueur minimale (6 caractères)
+ * - Callback onConfirm avec le nouveau mot de passe
  *
  * ## Communication
- * Parent (UserProfileScreen) ←→ EditNameDialog
- *   - Parent passe currentFullName
- *   - Dialog appelle onConfirm(fullName) ou onDismiss()
+ * Parent (UserProfileScreen) ←→ EditPasswordDialog
+ *   - Dialog appelle onConfirm(password) ou onDismiss()
  *
- * @param currentFullName Nom complet actuel à pré-remplir
  * @param onDismiss Callback pour annuler
- * @param onConfirm Callback avec le nouveau nom complet
+ * @param onConfirm Callback avec le nouveau mot de passe
  */
 @Composable
-fun EditNameDialog(
-    currentFullName: String,
+fun EditPasswordDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
 ) {
-    var fullName by remember { mutableStateOf(currentFullName) }
+    var newPassword by remember { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = stringResource(R.string.modifier_nom),
+                text = stringResource(R.string.modifier_mot_de_passe),
                 color = TextPrimary,
                 fontWeight = FontWeight.Bold
             )
         },
         text = {
             OutlinedTextField(
-                value = fullName,
-                onValueChange = { fullName = it },
-                label = { Text(stringResource(R.string.nouveau_nom_complet)) },
+                value = newPassword,
+                onValueChange = { newPassword = it },
+                label = { Text(stringResource(R.string.nouveau_mot_de_passe)) },
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = TextPrimary,
@@ -71,8 +68,8 @@ fun EditNameDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    if (fullName.isNotBlank()) {
-                        onConfirm(fullName)
+                    if (newPassword.isNotBlank() && newPassword.length >= 6) {
+                        onConfirm(newPassword)
                     }
                 }
             ) {

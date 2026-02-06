@@ -1,7 +1,11 @@
-package com.example.training.viewmodel
+package com.example.training.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -9,13 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import com.example.training.view.AddTaskScreen
 import com.example.training.view.IntroScreen
 import com.example.training.view.LoginScreen
@@ -24,8 +27,12 @@ import com.example.training.view.RegisterScreen
 import com.example.training.view.TaskDetailScreen
 import com.example.training.view.UserProfileScreen
 import com.example.training.view.WelcomeScreen
+import com.example.training.viewmodel.AuthViewModel
+import com.example.training.viewmodel.CategoryViewModel
+import com.example.training.viewmodel.OnboardingViewModel
+import com.example.training.navigation.Screen
+import com.example.training.viewmodel.TaskViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigator(
@@ -36,7 +43,7 @@ fun AppNavigator(
 ) {
     val navController = rememberNavController()
     var showTaskDetail by remember { mutableStateOf(false) }
-    val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
+    val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     // Navigation de intro vers onboarding après 2s
@@ -51,10 +58,10 @@ fun AppNavigator(
         NavHost(
             navController = navController,
             startDestination = Screen.Intro.route,
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None }
+            enterTransition = { EnterTransition.Companion.None },
+            exitTransition = { ExitTransition.Companion.None },
+            popEnterTransition = { EnterTransition.Companion.None },
+            popExitTransition = { ExitTransition.Companion.None }
         ) {
             composable(Screen.Intro.route) {
                 IntroScreen()
@@ -155,10 +162,10 @@ fun AppNavigator(
         }
 
         // Snackbar pour les messages
-        androidx.compose.material3.SnackbarHost(
+        SnackbarHost(
             hostState = snackbarHostState,
-            modifier = androidx.compose.ui.Modifier
-                .align(androidx.compose.ui.Alignment.BottomCenter)
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
                 .padding(16.dp)
         )
     }
