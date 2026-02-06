@@ -11,6 +11,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -18,35 +20,68 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.training.R
-import com.example.training.ui.theme.TrainingTheme
+import com.example.training.ui.theme.*
+import com.example.training.util.UiEvent
 import com.example.training.viewmodel.AuthViewModel
+import com.example.training.navigation.Screen
 
 @Composable
 fun RegisterScreen(
+    navController: NavController,
     viewModel: AuthViewModel = viewModel(),
-    onNavigateToLogin: () -> Unit,
-    onNavigateBack: (() -> Unit)? = null,
-    onRegisterSuccess: () -> Unit
+    onNavigateBack: (() -> Unit)? = null
 ) {
+    var prenom by remember { mutableStateOf("") }
+    var nom by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
+    // Collecter les StateFlows
+    val isLoading by viewModel.isLoading.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
     val passwordMismatchMessage = stringResource(R.string.password_mismatch)
     val passwordMinLengthMessage = stringResource(R.string.password_min_length)
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+    // Collecter les UiEvents pour navigation et snackbars
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(context.getString(event.messageRes))
+                }
+                is UiEvent.Navigate -> {
+                    navController.navigate(event.route) {
+                        popUpTo(0)
+                    }
+                }
+                UiEvent.NavigateBack -> {}
+            }
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(padding)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
             Text(
                 text = stringResource(R.string.inscription),
                 fontSize = 32.sp,
@@ -57,13 +92,49 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(40.dp))
 
         OutlinedTextField(
+            value = prenom,
+            onValueChange = { prenom = it },
+            label = { Text(stringResource(R.string.prenom)) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = AppPrimary,
+                unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedLabelColor = Color.White.copy(alpha = 0.6f),
+                unfocusedLabelColor = Color.White.copy(alpha = 0.6f)
+            ),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = nom,
+            onValueChange = { nom = it },
+            label = { Text(stringResource(R.string.nom)) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = AppPrimary,
+                unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                focusedLabelColor = Color.White.copy(alpha = 0.6f),
+                unfocusedLabelColor = Color.White.copy(alpha = 0.6f)
+            ),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text(stringResource(R.string.email)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF8875FF),
+                focusedBorderColor = AppPrimary,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
@@ -86,7 +157,7 @@ fun RegisterScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF8875FF),
+                focusedBorderColor = AppPrimary,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
@@ -109,7 +180,7 @@ fun RegisterScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF8875FF),
+                focusedBorderColor = AppPrimary,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
@@ -130,33 +201,24 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        if (viewModel.errorMessage != null) {
-            Text(
-                text = viewModel.errorMessage ?: "",
-                color = Color.Red,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
         Button(
             onClick = {
                 when {
                     password != confirmPassword -> passwordError = passwordMismatchMessage
                     password.length < 6 -> passwordError = passwordMinLengthMessage
-                    else -> viewModel.signUp(email, password, onRegisterSuccess)
+                    else -> viewModel.signUp(email, password, prenom, nom)
                 }
             },
-            enabled = !viewModel.isLoading,
+            enabled = !isLoading,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF8875FF)
+                containerColor = AppPrimary
             ),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
-            if (viewModel.isLoading) {
+            if (isLoading) {
                 CircularProgressIndicator(
                     color = Color.White,
                     modifier = Modifier.size(24.dp)
@@ -176,26 +238,29 @@ fun RegisterScreen(
             )
             Text(
                 text = stringResource(R.string.signin),
-                color = Color(0xFF8875FF),
+                color = AppPrimary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { onNavigateToLogin() }
+                modifier = Modifier.clickable {
+                    navController.navigate(Screen.Login.route)
+                }
             )
         }
-    }
+            }
 
-        if (onNavigateBack != null) {
-            IconButton(
-                onClick = onNavigateBack,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(top = 8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
-                    tint = Color.White
-                )
+            if (onNavigateBack != null) {
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.retour),
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
@@ -206,10 +271,9 @@ fun RegisterScreen(
 private fun RegisterScreenPreview() {
     TrainingTheme {
         RegisterScreen(
+            navController = rememberNavController(),
             viewModel = AuthViewModel(),
-            onNavigateToLogin = {},
-            onNavigateBack = {},
-            onRegisterSuccess = {}
+            onNavigateBack = {}
         )
     }
 }
