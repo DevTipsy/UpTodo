@@ -3,12 +3,15 @@ package com.example.training.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,14 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.training.R
 import com.example.training.model.Category
-import com.example.training.ui.theme.TrainingTheme
+import com.example.training.ui.theme.*
 import com.example.training.util.DateUtils
 import com.example.training.viewmodel.AuthViewModel
 import com.example.training.viewmodel.CalendarViewModel
@@ -132,7 +137,10 @@ fun AddTaskScreen(
                     ) { task ->
                         TaskItem(
                             task = task,
-                            category = categories.find { it.name == task.category }
+                            category = categories.find { it.name == task.category },
+                            onToggleComplete = { taskId, isCompleted ->
+                                viewModel.toggleTaskComplete(taskId, isCompleted)
+                            }
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                     }
@@ -159,7 +167,8 @@ fun AddTaskScreen(
 @Composable
 private fun TaskItem(
     task: com.example.training.model.Task,
-    category: Category?
+    category: Category?,
+    onToggleComplete: (String, Boolean) -> Unit
 ) {
     val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     val formattedDate = dateFormat.format(Date(task.date))
@@ -172,6 +181,34 @@ private fun TaskItem(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Checkbox ronde pour marquer la tâche comme complétée
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .background(
+                    color = if (task.isCompleted) AppPrimary else Color.Transparent,
+                    shape = CircleShape
+                )
+                .border(
+                    width = 2.dp,
+                    color = if (task.isCompleted) AppPrimary else BorderGray,
+                    shape = CircleShape
+                )
+                .clickable { onToggleComplete(task.id, !task.isCompleted) },
+            contentAlignment = Alignment.Center
+        ) {
+            if (task.isCompleted) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
         // Icône de la catégorie
         if (category != null) {
             Image(
@@ -199,9 +236,13 @@ private fun TaskItem(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = task.title,
-                color = Color.White,
+                color = if (task.isCompleted) Color.White.copy(alpha = 0.5f) else Color.White,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                style = if (task.isCompleted)
+                    TextStyle(textDecoration = TextDecoration.LineThrough)
+                else
+                    TextStyle()
             )
             Spacer(modifier = Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {

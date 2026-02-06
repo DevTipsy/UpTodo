@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.res.stringResource
 import com.example.training.R
 import com.example.training.model.Category
-import com.example.training.ui.theme.TrainingTheme
+import com.example.training.ui.theme.*
 import com.example.training.viewmodel.AuthViewModel
 import com.example.training.viewmodel.CategoryViewModel
 import com.example.training.viewmodel.TaskViewModel

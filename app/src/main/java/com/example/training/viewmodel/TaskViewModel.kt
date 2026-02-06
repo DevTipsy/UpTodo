@@ -130,9 +130,8 @@ class TaskViewModel : ViewModel() {
 
     /**
      * Marquer une tâche comme complétée/incomplétée
-     * (Optionnel - pour le futur)
      */
-    fun toggleTaskCompletion(taskId: String, isCompleted: Boolean) {
+    fun toggleTaskComplete(taskId: String, isCompleted: Boolean) {
         viewModelScope.launch {
             val updates = mapOf("isCompleted" to isCompleted)
             when (val result = taskRepository.updateTask(taskId, updates)) {
