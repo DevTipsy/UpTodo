@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -19,29 +20,61 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.training.R
-import com.example.training.ui.theme.TrainingTheme
+import com.example.training.ui.theme.*
+import com.example.training.util.UiEvent
 import com.example.training.viewmodel.AuthViewModel
+import com.example.training.viewmodel.Screen
 
 @Composable
 fun LoginScreen(
+    navController: NavController,
     viewModel: AuthViewModel = viewModel(),
-    onNavigateToRegister: () -> Unit,
-    onNavigateBack: (() -> Unit)? = null,
-    onLoginSuccess: () -> Unit
+    onNavigateBack: (() -> Unit)? = null
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+    // Collecter les StateFlows
+    val isLoading by viewModel.isLoading.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    // Collecter les UiEvents pour navigation et snackbars
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(context.getString(event.messageRes))
+                }
+                is UiEvent.Navigate -> {
+                    navController.navigate(event.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                }
+                UiEvent.NavigateBack -> { /* Pas utilisé ici */ }
+            }
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(padding)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
             Text(
                 text = stringResource(R.string.connexion),
                 fontSize = 32.sp,
@@ -58,7 +91,7 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF8875FF),
+                focusedBorderColor = AppPrimary,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
@@ -78,7 +111,7 @@ fun LoginScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF8875FF),
+                focusedBorderColor = AppPrimary,
                 unfocusedBorderColor = Color.White.copy(alpha = 0.3f),
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White,
@@ -90,27 +123,18 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        if (viewModel.errorMessage != null) {
-            Text(
-                text = viewModel.errorMessage ?: "",
-                color = Color.Red,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
         Button(
-            onClick = { viewModel.signIn(email, password, onLoginSuccess) },
-            enabled = !viewModel.isLoading,
+            onClick = { viewModel.signIn(email, password) },
+            enabled = !isLoading,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF8875FF)
+                containerColor = AppPrimary
             ),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
-            if (viewModel.isLoading) {
+            if (isLoading) {
                 CircularProgressIndicator(
                     color = Color.White,
                     modifier = Modifier.size(24.dp)
@@ -130,26 +154,29 @@ fun LoginScreen(
             )
             Text(
                 text = stringResource(R.string.signup),
-                color = Color(0xFF8875FF),
+                color = AppPrimary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { onNavigateToRegister() }
+                modifier = Modifier.clickable {
+                    navController.navigate(Screen.Register.route)
+                }
             )
         }
-    }
+            }
 
-        if (onNavigateBack != null) {
-            IconButton(
-                onClick = onNavigateBack,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(top = 8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
-                    tint = Color.White
-                )
+            if (onNavigateBack != null) {
+                IconButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(top = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.retour),
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
@@ -160,10 +187,9 @@ fun LoginScreen(
 private fun LoginScreenPreview() {
     TrainingTheme {
         LoginScreen(
+            navController = rememberNavController(),
             viewModel = AuthViewModel(),
-            onNavigateToRegister = {},
-            onNavigateBack = {},
-            onLoginSuccess = {}
+            onNavigateBack = {}
         )
     }
 }

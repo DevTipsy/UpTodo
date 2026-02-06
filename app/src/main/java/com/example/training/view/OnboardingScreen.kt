@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.training.R
-import com.example.training.ui.theme.TrainingTheme
+import com.example.training.ui.theme.*
 import com.example.training.viewmodel.OnboardingViewModel
 
 @Composable
@@ -123,7 +123,7 @@ fun OnboardingScreen(
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF8875FF)
+                            containerColor = AppPrimary
                         ),
                         modifier = Modifier
                             .width(if (viewModel.isLastPage) 155.dp else 100.dp)

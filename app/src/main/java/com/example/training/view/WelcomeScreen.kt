@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.training.R
-import com.example.training.ui.theme.TrainingTheme
+import com.example.training.ui.theme.*
 
 @Composable
 fun WelcomeScreen(
@@ -67,7 +67,7 @@ fun WelcomeScreen(
         Button(
             onClick = onLogin,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF8875FF)
+                containerColor = AppPrimary
             ),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
             modifier = Modifier
@@ -105,7 +105,7 @@ fun WelcomeScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
+                    contentDescription = stringResource(R.string.retour),
                     tint = Color.White
                 )
             }
